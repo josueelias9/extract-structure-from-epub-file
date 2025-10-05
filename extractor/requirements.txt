@@ -1,0 +1,10 @@
+# Requirements for EPUB to PDF Structure Generator
+
+# Core dependencies
+reportlab>=3.6.0
+
+# Optional: For better performance with large EPUB files
+lxml>=4.6.0
+
+# For development and testing
+pytest>=6.0.0

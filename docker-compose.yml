@@ -1,0 +1,29 @@
+version: '3.8'
+
+services:
+  epub-to-pdf:
+    build: .
+    container_name: epub-structure-generator
+    environment:
+      # Required: Name of the EPUB file in the input directory
+      - EPUB_FILE=${EPUB_FILE:-my_epub.epub}
+      # Optional: Name of the output PDF file
+      - OUTPUT_FILE=${OUTPUT_FILE:-}
+    volumes:
+      # Mount directory containing EPUB files
+      - ${INPUT_PATH:-./}:/app/input:ro
+      # Mount directory for output PDF files
+      - ${OUTPUT_PATH:-./output}:/app/output
+    restart: "no"
+
+# Example usage:
+# 1. Place your EPUB file in the current directory
+# 2. Create output directory: mkdir -p output
+# 3. Run with environment variables:
+#    EPUB_FILE=my_book.epub docker-compose up
+# 
+# Or create a .env file with:
+# EPUB_FILE=my_book.epub
+# INPUT_PATH=/path/to/your/epub/files
+# OUTPUT_PATH=/path/to/output/directory
+# OUTPUT_FILE=custom_name.pdf
