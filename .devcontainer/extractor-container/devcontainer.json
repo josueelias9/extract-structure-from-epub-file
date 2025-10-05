@@ -1,0 +1,19 @@
+{
+  "name": "Extractor Container",
+  "dockerComposeFile": ["../../docker-compose.yml"],
+  "service": "extractor",
+  "shutdownAction": "none",
+  "workspaceFolder": "/workspace/extractor",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "hediet.vscode-drawio",
+        "ms-python.python",
+        "tomoki1207.pdf"
+      ],
+      "settings": {
+        "workbench.colorTheme": "Monokai"
+      }
+    }
+  }
+}
