@@ -26,39 +26,15 @@ class EPUBToPDFGenerator:
         self.namespace_map = {}
 
     def extract_structure(self) -> Dict:
-        """Extract the structure from an EPUB file."""
+        """Extract basic structure from an EPUB file (simplified version)."""
         if not self.epub_path.exists():
             raise FileNotFoundError(f"EPUB file not found: {self.epub_path}")
             
-        try:
-            with zipfile.ZipFile(self.epub_path, 'r') as epub:
-                # Get the container.xml to find the OPF file
-                container_content = epub.read('META-INF/container.xml')
-                container_root = ET.fromstring(container_content)
-                
-                # Find the OPF file path
-                opf_path = self._find_opf_path(container_root)
-                
-                # Read the OPF file
-                opf_content = epub.read(opf_path)
-                opf_root = ET.fromstring(opf_content)
-                
-                # Update namespace map
-                self._update_namespaces(opf_root)
-                
-                # Find NCX file (table of contents)
-                ncx_path = self._find_ncx_path(opf_root, opf_path)
-                
-                if ncx_path:
-                    # Extract structure from NCX file
-                    ncx_content = epub.read(ncx_path)
-                    return self._parse_ncx_structure(ncx_content)
-                else:
-                    # Fallback: try to extract from spine
-                    return self._extract_from_spine(epub, opf_root, opf_path)
-                    
-        except Exception as e:
-            raise Exception(f"Error processing EPUB file: {str(e)}")
+        # Return basic structure with just the title
+        return {
+            'title': self.epub_path.stem,
+            'chapters': []
+        }
 
     def _find_opf_path(self, container_root: ET.Element) -> str:
         """Find the path to the OPF file from container.xml."""
@@ -67,152 +43,6 @@ class EPUBToPDFGenerator:
                 return rootfile.get('full-path')
         raise Exception("Could not find OPF file in container.xml")
     
-    def _update_namespaces(self, root: ET.Element):
-        """Update namespace map from XML root."""
-        for prefix, uri in root.attrib.items():
-            if prefix.startswith('xmlns'):
-                if prefix == 'xmlns':
-                    self.namespace_map[''] = uri
-                else:
-                    self.namespace_map[prefix.split(':')[1]] = uri
-
-    def _find_ncx_path(self, opf_root: ET.Element, opf_path: str) -> Optional[str]:
-        """Find the NCX file path from the OPF file."""
-        opf_dir = str(Path(opf_path).parent)
-        if opf_dir == '.':
-            opf_dir = ''
-        
-        # Look for NCX file in manifest
-        for item in opf_root.findall('.//{http://www.idpf.org/2007/opf}item'):
-            if item.get('media-type') == 'application/x-dtbncx+xml':
-                ncx_href = item.get('href')
-                if opf_dir:
-                    return f"{opf_dir}/{ncx_href}"
-                return ncx_href
-        
-        return None
-
-    def _parse_ncx_structure(self, ncx_content: bytes) -> Dict:
-        """Parse the NCX file to extract table of contents structure."""
-        root = ET.fromstring(ncx_content)
-        
-        # Find the title
-        title_elem = root.find('.//{http://www.daisy.org/z3986/2005/ncx/}docTitle/{http://www.daisy.org/z3986/2005/ncx/}text')
-        title = title_elem.text if title_elem is not None else "Unknown Title"
-        
-        # Find navigation points
-        nav_map = root.find('.//{http://www.daisy.org/z3986/2005/ncx/}navMap')
-        chapters = []
-        
-        if nav_map is not None:
-            chapters = self._parse_nav_points(nav_map)
-        
-        return {
-            'title': title,
-            'chapters': chapters
-        }
-
-    def _parse_nav_points(self, parent: ET.Element, level: int = 1) -> List[Dict]:
-        """Recursively parse navigation points."""
-        nav_points = []
-        
-        # Find direct children navPoint elements only
-        for nav_point in parent.findall('./{http://www.daisy.org/z3986/2005/ncx/}navPoint'):
-                
-            # Get the title
-            label_elem = nav_point.find('.//{http://www.daisy.org/z3986/2005/ncx/}navLabel/{http://www.daisy.org/z3986/2005/ncx/}text')
-            title = label_elem.text if label_elem is not None else "Untitled"
-            
-            # Get the source file
-            content_elem = nav_point.find('.//{http://www.daisy.org/z3986/2005/ncx/}content')
-            src = content_elem.get('src') if content_elem is not None else ""
-            
-            # Parse children
-            children = self._parse_nav_points(nav_point, level + 1)
-            
-            nav_points.append({
-                'title': title,
-                'level': level,
-                'src': src,
-                'children': children
-            })
-        
-        return nav_points
-
-    def _extract_from_spine(self, epub: zipfile.ZipFile, opf_root: ET.Element, opf_path: str) -> Dict:
-        """Extract structure from spine as fallback method."""
-        opf_dir = str(Path(opf_path).parent)
-        if opf_dir == '.':
-            opf_dir = ''
-        
-        # Get manifest items
-        manifest_items = {}
-        for item in opf_root.findall('.//{http://www.idpf.org/2007/opf}item'):
-            item_id = item.get('id')
-            href = item.get('href')
-            if opf_dir:
-                full_path = f"{opf_dir}/{href}"
-            else:
-                full_path = href
-            manifest_items[item_id] = {
-                'href': href,
-                'full_path': full_path,
-                'media-type': item.get('media-type')
-            }
-        
-        # Get spine order
-        chapters = []
-        for itemref in opf_root.findall('.//{http://www.idpf.org/2007/opf}itemref'):
-            idref = itemref.get('idref')
-            if idref in manifest_items and manifest_items[idref]['media-type'] == 'application/xhtml+xml':
-                item_info = manifest_items[idref]
-                
-                # Try to extract title from the XHTML file
-                try:
-                    content = epub.read(item_info['full_path'])
-                    title = self._extract_title_from_html(content)
-                    if not title:
-                        title = Path(item_info['href']).stem.replace('_', ' ').title()
-                except:
-                    title = Path(item_info['href']).stem.replace('_', ' ').title()
-                
-                chapters.append({
-                    'title': title,
-                    'level': 1,
-                    'src': item_info['href'],
-                    'children': []
-                })
-        
-        return {
-            'title': self.epub_path.stem,
-            'chapters': chapters
-        }
-
-    def _extract_title_from_html(self, html_content: bytes) -> str:
-        """Extract title from HTML content."""
-        try:
-            content = html_content.decode('utf-8', errors='ignore')
-            
-            # Try to find title tag
-            title_match = re.search(r'<title[^>]*>([^<]+)</title>', content, re.IGNORECASE)
-            if title_match:
-                return title_match.group(1).strip()
-            
-            # Try to find h1 tag
-            h1_match = re.search(r'<h1[^>]*>([^<]+)</h1>', content, re.IGNORECASE)
-            if h1_match:
-                return h1_match.group(1).strip()
-            
-            # Try to find h2 tag as fallback
-            h2_match = re.search(r'<h2[^>]*>([^<]+)</h2>', content, re.IGNORECASE)
-            if h2_match:
-                return h2_match.group(1).strip()
-                
-        except:
-            pass
-        
-        return ""
-
     def _extract_detailed_structure(self) -> Dict:
         """Extract detailed structure including all headings from chapter content."""
         if not self.epub_path.exists():
@@ -398,6 +228,9 @@ class EPUBToPDFGenerator:
         if not output_path:
             output_path = self.epub_path.stem + "_structure.pdf"
         
+        # Create output directory if it doesn't exist
+        Path(output_path).parent.mkdir(parents=True, exist_ok=True)
+        
         # Create PDF document
         doc = SimpleDocTemplate(output_path, pagesize=A4)
         story = []
@@ -495,20 +328,102 @@ class EPUBToPDFGenerator:
             count += self._count_chapters(chapter['children'])
         return count
 
+    def generate_markdown(self, output_path: str = None) -> str:
+        """Generate a Markdown file with the EPUB structure."""
+        # Extract detailed structure
+        structure = self._extract_detailed_structure()
+        
+        # Set output path
+        if not output_path:
+            output_path = self.epub_path.stem + "_structure.md"
+        
+        # Create output directory if it doesn't exist
+        Path(output_path).parent.mkdir(parents=True, exist_ok=True)
+        
+        markdown_content = []
+        
+        # Add title
+        markdown_content.append(f"# Estructura del Libro")
+        markdown_content.append(f"## {structure['title']}")
+        markdown_content.append("")
+        markdown_content.append("---")
+        markdown_content.append("")
+        
+        # Add table of contents
+        markdown_content.append("## Índice de Contenidos")
+        markdown_content.append("")
+        
+        # Function to add chapters recursively
+        def add_chapter_to_markdown(chapter: Dict, content: List[str]):
+            # Create heading with appropriate level (# ## ### etc.)
+            level = min(chapter['level'] + 2, 6)  # Start at ### (level 3) for chapters, max at ######
+            heading_prefix = "#" * level
+            
+            content.append(f"{heading_prefix} {chapter['title']}")
+            content.append("")
+            
+            # Add children
+            for child in chapter['children']:
+                add_chapter_to_markdown(child, content)
+        
+        if structure['chapters']:
+            for chapter in structure['chapters']:
+                add_chapter_to_markdown(chapter, markdown_content)
+        else:
+            markdown_content.append("No se encontraron capítulos en la tabla de contenidos.")
+            markdown_content.append("")
+        
+        # Add summary
+        markdown_content.append("---")
+        markdown_content.append("")
+        markdown_content.append("## Resumen")
+        markdown_content.append("")
+        total_chapters = self._count_chapters(structure['chapters'])
+        markdown_content.append(f"- **Total de capítulos encontrados:** {total_chapters}")
+        markdown_content.append(f"- **Archivo EPUB:** `{self.epub_path.name}`")
+        markdown_content.append("")
+        
+        # Write to file
+        with open(output_path, 'w', encoding='utf-8') as f:
+            f.write('\n'.join(markdown_content))
+        
+        return output_path
+
+    def generate_both_outputs(self, output_dir: str = "output") -> Dict[str, str]:
+        """Generate both PDF and Markdown outputs in the specified directory."""
+        # Create output directory
+        output_path = Path(output_dir)
+        output_path.mkdir(parents=True, exist_ok=True)
+        
+        # Generate file paths
+        base_name = self.epub_path.stem
+        pdf_path = output_path / f"{base_name}_structure.pdf"
+        md_path = output_path / f"{base_name}_structure.md"
+        
+        # Generate both files
+        pdf_result = self.generate_pdf(str(pdf_path))
+        md_result = self.generate_markdown(str(md_path))
+        
+        return {
+            'pdf': pdf_result,
+            'markdown': md_result
+        }
+
 
 def main():
     parser = argparse.ArgumentParser(
-        description="Generate PDF with EPUB table of contents structure",
+        description="Generate PDF and Markdown with EPUB table of contents structure",
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Examples:
   python epub_to_pdf.py book.epub
-  python epub_to_pdf.py book.epub --output book_structure.pdf
+  python epub_to_pdf.py book.epub --output-dir custom_output
         """
     )
     
     parser.add_argument('epub_file', help='Path to the EPUB file')
-    parser.add_argument('--output', '-o', help='Output PDF file path')
+    parser.add_argument('--output-dir', '-o', default='output', 
+                       help='Output directory for generated files (default: output)')
     
     args = parser.parse_args()
     
@@ -522,9 +437,11 @@ Examples:
             sys.exit(1)
         
         generator = EPUBToPDFGenerator(args.epub_file)
-        pdf_path = generator.generate_pdf(args.output)
+        results = generator.generate_both_outputs(args.output_dir)
         
-        print(f"✅ PDF generado exitosamente: {pdf_path}")
+        print(f"✅ Archivos generados exitosamente:")
+        print(f"   📄 PDF: {results['pdf']}")
+        print(f"   📝 Markdown: {results['markdown']}")
         
     except FileNotFoundError as e:
         print(f"❌ Error: {e}", file=sys.stderr)

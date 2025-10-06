@@ -1,0 +1,142 @@
+### Variables
+@ollama_host = http://localhost:11434
+
+### 1. Test Ollama Service Health
+GET {{ollama_host}}/api/tags
+Content-Type: application/json
+
+###
+
+### 2. List Available Models
+GET {{ollama_host}}/api/tags
+Accept: application/json
+
+###
+
+### 3. Pull Llama 3.2 Model (if not available)
+POST {{ollama_host}}/api/pull
+Content-Type: application/json
+
+{
+  "name": "llama3.2"
+}
+
+###
+
+### 4. Generate Response - Simple Question
+POST {{ollama_host}}/api/generate
+Content-Type: application/json
+
+{
+  "model": "llama3.2",
+  "prompt": "¿Qué es un archivo EPUB?",
+  "stream": false
+}
+
+###
+
+### 5. Generate Response - EPUB Structure Question
+POST {{ollama_host}}/api/generate
+Content-Type: application/json
+
+{
+  "model": "llama3.2",
+  "prompt": "Explícame la estructura interna de un archivo EPUB y sus componentes principales como OPF, NCX, y XHTML.",
+  "stream": false
+}
+
+###
+
+### 6. Generate Response - Technical Question
+POST {{ollama_host}}/api/generate
+Content-Type: application/json
+
+{
+  "model": "llama3.2",
+  "prompt": "Como desarrollador Python, ¿qué librerías recomendarías para extraer la tabla de contenidos de un archivo EPUB?",
+  "stream": false
+}
+
+###
+
+### 7. Generate Streaming Response
+POST {{ollama_host}}/api/generate
+Content-Type: application/json
+
+{
+  "model": "llama3.2",
+  "prompt": "Crea un ejemplo de código Python para leer un archivo EPUB usando zipfile y extraer su tabla de contenidos.",
+  "stream": true
+}
+
+###
+
+### 8. Chat Completion Style
+POST {{ollama_host}}/api/chat
+Content-Type: application/json
+
+{
+  "model": "llama3.2",
+  "messages": [
+    {
+      "role": "system",
+      "content": "Eres un experto en procesamiento de documentos EPUB y Python."
+    },
+    {
+      "role": "user",
+      "content": "¿Cómo puedo extraer automáticamente todos los títulos y subtítulos de un libro EPUB usando Python?"
+    }
+  ],
+  "stream": false
+}
+
+###
+
+### 9. Test with Different Model (if available)
+POST {{ollama_host}}/api/generate
+Content-Type: application/json
+
+{
+  "model": "codellama",
+  "prompt": "Write a Python function to parse NCX files from EPUB archives.",
+  "stream": false
+}
+
+###
+
+### 10. Generate with Parameters
+POST {{ollama_host}}/api/generate
+Content-Type: application/json
+
+{
+  "model": "llama3.2",
+  "prompt": "Resume en 3 puntos qué es un archivo EPUB:",
+  "stream": false,
+  "options": {
+    "temperature": 0.7,
+    "top_p": 0.9,
+    "max_tokens": 150
+  }
+}
+
+###
+
+### 11. Check Model Info
+POST {{ollama_host}}/api/show
+Content-Type: application/json
+
+{
+  "name": "llama3.2"
+}
+
+###
+
+### 12. Delete Model (use with caution)
+# DELETE {{ollama_host}}/api/delete
+# Content-Type: application/json
+
+# {
+#   "name": "llama3.2"
+# }
+
+###

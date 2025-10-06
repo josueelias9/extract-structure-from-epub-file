@@ -9,11 +9,15 @@
       "extensions": [
         "hediet.vscode-drawio",
         "ms-python.python",
-        "tomoki1207.pdf"
+        "tomoki1207.pdf",
+        "marp-team.marp-vscode"
       ],
       "settings": {
         "workbench.colorTheme": "Monokai"
       }
     }
+  },
+  "features": {
+    "ghcr.io/devcontainers/features/git:1": {}
   }
 }
