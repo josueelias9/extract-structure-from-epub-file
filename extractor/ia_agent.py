@@ -18,10 +18,9 @@ Rules:
 - Keep important technical concepts
 - Remove redundancies and unnecessary details
 - Use clear and direct language
-- The summary should be approximately 30-40% of the original text
 - Preserve key points and essential information
-- If the text contains important code or commands, mention them briefly
-- Give the summary inmediately without any preamble or additional commentary"""
+- Give the summary inmediately without any preamble or additional commentary
+- summary must be two sentences max"""
     
     def summarize_content(self, content: str) -> str:
         """

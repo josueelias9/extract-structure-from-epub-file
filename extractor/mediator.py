@@ -1,5 +1,6 @@
 from extractor import EPUBExtractor
 from ia_agent import AIAgent
+from marp_exporter import MarpExporter
 from typing import Dict, Any
 import json
 
@@ -7,9 +8,18 @@ import json
 class Mediator:
     """Mediator that connects EPUB Extractor with AI Agent to generate summaries"""
     
-    def __init__(self, ollama_host: str = "http://ollama:11434"):
+    def __init__(self, ollama_host: str = "http://ollama:11434", output_format: str = "text"):
+        """
+        Initialize mediator
+        
+        Args:
+            ollama_host: Ollama server host
+            output_format: Format for content ('text' or 'markdown')
+        """
         self.extractor = EPUBExtractor()
         self.ai_agent = AIAgent(ollama_host)
+        self.marp_exporter = MarpExporter()
+        self.output_format = output_format
     
     def process_epub(self, epub_path: str, generate_summaries: bool = True) -> Dict[str, Any]:
         """
@@ -135,8 +145,13 @@ class Mediator:
 
 # Usage example
 if __name__ == "__main__":
-    # Create mediator
-    mediator = Mediator(ollama_host="http://ollama:11434")
+    # Example 1: Full workflow with Marp export
+    print("="*80)
+    print("FULL WORKFLOW: EPUB → SUMMARIES → MARP PRESENTATION")
+    print("="*80)
+    
+    # Create mediator with Markdown format (recommended for Marp)
+    mediator = Mediator(ollama_host="http://ollama:11434", output_format="markdown")
     
     # Process EPUB with summaries
     epub_path = "my_book.epub"
@@ -156,24 +171,61 @@ if __name__ == "__main__":
     for key, value in stats.items():
         print(f"{key}: {value}")
     
-    # Save to JSON
-    output_path = "book_with_summaries.json"
-    mediator.save_to_json(structure, output_path)
+    # Save structure to JSON
+    json_output = "book_with_summaries.json"
+    mediator.save_to_json(structure, json_output)
     
-    # Example: Access specific summary
+    # Export to Marp presentation
     print("\n" + "="*80)
-    print("EXAMPLE OF SUMMARY ACCESS")
+    print("EXPORTING TO MARP PRESENTATION")
     print("="*80)
     
-    for chapter_title, chapter_data in structure.items():
-        print(f"\n📖 Chapter: {chapter_title}")
-        if chapter_data.get("summary"):
-            print(f"💡 Summary: {chapter_data['summary']}")
+    # Configure Marp exporter
+    mediator.marp_exporter = MarpExporter(
+        theme="default",
+        paginate=True,
+        footer="Generated from EPUB",
+        background_color="#fff",
+        color="#333"
+    )
+    
+    # Export full presentation
+    marp_output = "book_presentation.md"
+    mediator.marp_exporter.export_to_marp(
+        structure=structure,
+        output_path=marp_output,
+        title="Book Summary Presentation",
+        include_summaries=True,
+        include_content=False,  # Set to True to include full content
+        max_depth=3
+    )
+    
+    # Example 2: Export single chapter
+    print("\n" + "="*80)
+    print("EXPORTING SINGLE CHAPTER")
+    print("="*80)
+    
+    if structure:
+        first_chapter = list(structure.keys())[0]
+        chapter_output = f"chapter_{first_chapter.replace(' ', '_')}.md"
         
-        # Show first subsection if exists
-        if chapter_data.get("subsections"):
-            first_subsection = list(chapter_data["subsections"].keys())[0]
-            print(f"\n  📄 Subsection: {first_subsection}")
-            print(f"  💡 Summary: {chapter_data['subsections'][first_subsection].get('summary', 'N/A')}")
-        
-        break  # Only show first chapter as example
+        mediator.marp_exporter.export_chapter(
+            chapter_title=first_chapter,
+            chapter_data=structure[first_chapter],
+            output_path=chapter_output,
+            include_summaries=True,
+            include_content=False
+        )
+    
+    # Summary
+    print("\n" + "="*80)
+    print("✅ WORKFLOW COMPLETE!")
+    print("="*80)
+    print(f"📄 JSON export: {json_output}")
+    print(f"📊 Marp presentation: {marp_output}")
+    if structure:
+        print(f"📖 Chapter presentation: {chapter_output}")
+    print("\n💡 Next steps:")
+    print("  1. Open .md files in VSCode with Marp extension")
+    print("  2. Preview with Marp: Markdown Preview")
+    print("  3. Export to PDF/PPTX from VSCode")
