@@ -1,6 +1,5 @@
 import requests
 import json
-from bs4 import BeautifulSoup
 from typing import List
 
 
@@ -21,7 +20,8 @@ Rules:
 - Use clear and direct language
 - The summary should be approximately 30-40% of the original text
 - Preserve key points and essential information
-- If the text contains important code or commands, mention them briefly"""
+- If the text contains important code or commands, mention them briefly
+- Give the summary inmediately without any preamble or additional commentary"""
     
     def summarize_content(self, content: str) -> str:
         """
@@ -36,14 +36,11 @@ Rules:
         if not content or not content.strip():
             return ""
         
-        # Clean basic HTML content for better processing
-        soup = BeautifulSoup(content, 'lxml')
-        text_content = soup.get_text(separator=' ', strip=True)
         
         # If content is very short, it doesn't need a summary
-        if len(text_content.split()) < 50:
-            return text_content
-        
+        if len(content.split()) < 50:
+            return content
+
         payload = {
             "model": self.model,
             "messages": [
@@ -53,7 +50,7 @@ Rules:
                 },
                 {
                     "role": "user",
-                    "content": f"Summarize the following content concisely:\n\n{text_content}"
+                    "content": f"Summarize the following content concisely:\n\n{content}"
                 }
             ],
             "stream": False
@@ -123,12 +120,12 @@ if __name__ == "__main__":
     
     # Test connection
     if agent.test_connection():
-        # Test summary
+        # Test summary with clean text (no HTML)
         test_content = """
-        <p>Google Cloud Storage is a service for storing your objects in Google Cloud. 
+        Google Cloud Storage is a service for storing your objects in Google Cloud. 
         You can use GCS for storing image, video, audio, and unstructured data. 
         You can combine these individual data types into large files of size at least 100 MB 
-        and in between 100 to 10,000 shards to improve read and write throughput.</p>
+        and in between 100 to 10,000 shards to improve read and write throughput.
         """
         
         summary = agent.summarize_content(test_content)

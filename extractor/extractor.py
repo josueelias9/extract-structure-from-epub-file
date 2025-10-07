@@ -54,9 +54,12 @@ class EPUBExtractor:
                     
                     content_html = ''.join(content_parts)
                     
+                    # Parse HTML to clean text
+                    content_text = self._parse_html_to_text(content_html)
+                    
                     # Create entry for this header
                     entry = {
-                        "content": content_html,
+                        "content": content_text,
                         "subsections": {}
                     }
                     
@@ -81,6 +84,23 @@ class EPUBExtractor:
 
         print(f"✓ Extraction complete: {len(structure)} main sections found")
         return structure
+    
+    def _parse_html_to_text(self, html_content: str) -> str:
+        """
+        Parse HTML content to clean text
+        
+        Args:
+            html_content: HTML string
+            
+        Returns:
+            str: Clean text without HTML tags
+        """
+        if not html_content or not html_content.strip():
+            return ""
+        
+        soup = BeautifulSoup(html_content, 'lxml')
+        text = soup.get_text(separator=' ', strip=True)
+        return text
     
     def print_structure(self, structure: Dict[str, Any], indent: int = 0) -> None:
         """

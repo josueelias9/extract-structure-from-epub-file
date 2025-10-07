@@ -1,4 +1,4 @@
-from hola import EPUBExtractor
+from extractor import EPUBExtractor
 from ia_agent import AIAgent
 from typing import Dict, Any
 import json
