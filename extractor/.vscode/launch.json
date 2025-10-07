@@ -16,20 +16,15 @@
             "justMyCode": true,
             "stopOnEntry": false
         },
-        {
-            "name": "Test Ollama Mediator",
+                {
+            "name": "try",
             "type": "debugpy",
             "request": "launch",
             "program": "${workspaceFolder}/mediator.py",
-            "args": [],
             "console": "integratedTerminal",
             "cwd": "${workspaceFolder}",
-            "env": {
-                "OLLAMA_HOST": "http://ollama:11434"
-            },
             "python": "${command:python.interpreterPath}",
-            "justMyCode": true,
-            "stopOnEntry": false
         }
+
     ]
 }

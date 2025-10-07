@@ -276,22 +276,27 @@ class EPUBToPDFGenerator:
         )
         story.append(Paragraph("Índice de Contenidos", toc_style))
         
-        # Add chapters
-        def add_chapter_to_story(chapter: Dict, story: List):
+        # Add chapters with numbering
+        def add_chapter_to_story(chapter: Dict, story: List, numbering: List[int]):
             level = min(chapter['level'], 6)  # Limit to 6 levels
             style = heading_styles[level]
             
-            # Create the chapter entry
-            chapter_text = chapter['title']
+            # Create numbering string (e.g., "1.2.3")
+            number_str = ".".join(map(str, numbering))
+            
+            # Create the chapter entry with numbering
+            chapter_text = f"{number_str} {chapter['title']}"
             story.append(Paragraph(chapter_text, style))
             
-            # Add children
-            for child in chapter['children']:
-                add_chapter_to_story(child, story)
+            # Add children with incremented numbering
+            if chapter['children']:
+                for i, child in enumerate(chapter['children'], 1):
+                    child_numbering = numbering + [i]
+                    add_chapter_to_story(child, story, child_numbering)
         
         if structure['chapters']:
-            for chapter in structure['chapters']:
-                add_chapter_to_story(chapter, story)
+            for i, chapter in enumerate(structure['chapters'], 1):
+                add_chapter_to_story(chapter, story, [i])
         else:
             no_chapters_style = ParagraphStyle(
                 'NoChapters',
@@ -353,22 +358,26 @@ class EPUBToPDFGenerator:
         markdown_content.append("## Índice de Contenidos")
         markdown_content.append("")
         
-        # Function to add chapters recursively
-        def add_chapter_to_markdown(chapter: Dict, content: List[str]):
-            # Create heading with appropriate level (# ## ### etc.)
-            level = min(chapter['level'] + 2, 6)  # Start at ### (level 3) for chapters, max at ######
-            heading_prefix = "#" * level
+        # Function to add chapters recursively with numbering
+        def add_chapter_to_markdown(chapter: Dict, content: List[str], numbering: List[int]):
+            # Create numbering string (e.g., "1.2.3")
+            number_str = ".".join(map(str, numbering))
             
-            content.append(f"{heading_prefix} {chapter['title']}")
+            # Add indentation based on level
+            indent = "  " * (len(numbering) - 1)
+            
+            content.append(f"{indent}{number_str} {chapter['title']}")
             content.append("")
             
-            # Add children
-            for child in chapter['children']:
-                add_chapter_to_markdown(child, content)
+            # Add children with incremented numbering
+            if chapter['children']:
+                for i, child in enumerate(chapter['children'], 1):
+                    child_numbering = numbering + [i]
+                    add_chapter_to_markdown(child, content, child_numbering)
         
         if structure['chapters']:
-            for chapter in structure['chapters']:
-                add_chapter_to_markdown(chapter, markdown_content)
+            for i, chapter in enumerate(structure['chapters'], 1):
+                add_chapter_to_markdown(chapter, markdown_content, [i])
         else:
             markdown_content.append("No se encontraron capítulos en la tabla de contenidos.")
             markdown_content.append("")

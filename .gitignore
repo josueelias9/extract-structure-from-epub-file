@@ -1,2 +1,3 @@
 extractor/output/my_epub_detailed_structure.pdf
 extractor/my_epub_structure.pdf
+*.pyc

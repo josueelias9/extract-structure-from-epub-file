@@ -5,871 +5,871 @@
 
 ## Índice de Contenidos
 
-### Cover
+1 Cover
 
-### Table of Contents
+2 Table of Contents
 
-#### List of Tables
+  2.1 List of Tables
 
-#### List of Illustrations
+  2.2 List of Illustrations
 
-#### Guide
+  2.3 Guide
 
-#### Pages
+  2.4 Pages
 
-### Official Google Cloud CertifiedProfessional Machine Learning EngineerStudy Guide
+3 Official Google Cloud CertifiedProfessional Machine Learning EngineerStudy Guide
 
-### F02
+4 F02
 
-### F03
+5 F03
 
-### Acknowledgments
+6 Acknowledgments
 
-### About the Author
+7 About the Author
 
-### About the Technical Editors
+8 About the Technical Editors
 
-#### About the Technical Proofreader
+  8.1 About the Technical Proofreader
 
-#### Google Technical Reviewer
+  8.2 Google Technical Reviewer
 
-### Introduction
+9 Introduction
 
-#### Google Cloud Professional Machine Learning Engineer Certification
+  9.1 Google Cloud Professional Machine Learning Engineer Certification
 
-##### Why Become Professional ML Engineer (PMLE) Certified?
+    9.1.1 Why Become Professional ML Engineer (PMLE) Certified?
 
-##### How to Become Certified
+    9.1.2 How to Become Certified
 
-#### Who Should Buy This Book
+  9.2 Who Should Buy This Book
 
-#### How This Book Is Organized
+  9.3 How This Book Is Organized
 
-##### Chapter Features
+    9.3.1 Chapter Features
 
-#### Bonus Digital Contents
+  9.4 Bonus Digital Contents
 
-##### Interactive Online Learning Environment and Test Bank
+    9.4.1 Interactive Online Learning Environment and Test Bank
 
-#### Conventions Used in This Book
+  9.5 Conventions Used in This Book
 
-#### Google Cloud Professional ML Engineer Objective Map
+  9.6 Google Cloud Professional ML Engineer Objective Map
 
-#### How to Contact the Publisher
+  9.7 How to Contact the Publisher
 
-#### Assessment Test
+  9.8 Assessment Test
 
-#### Answers to Assessment Test
+  9.9 Answers to Assessment Test
 
-### Chapter 1Framing ML Problems
+10 Chapter 1Framing ML Problems
 
-#### Translating Business Use Cases
+  10.1 Translating Business Use Cases
 
-#### Machine Learning Approaches
+  10.2 Machine Learning Approaches
 
-##### Supervised, Unsupervised, and Semi‐supervised Learning
+    10.2.1 Supervised, Unsupervised, and Semi‐supervised Learning
 
-##### Classification, Regression, Forecasting, and Clustering
+    10.2.2 Classification, Regression, Forecasting, and Clustering
 
-#### ML Success Metrics
+  10.3 ML Success Metrics
 
-##### Area Under the Curve Receiver Operating Characteristic (AUC ROC)
+    10.3.1 Area Under the Curve Receiver Operating Characteristic (AUC ROC)
 
-##### The Area Under the Precision‐Recall (AUC PR) Curve
+    10.3.2 The Area Under the Precision‐Recall (AUC PR) Curve
 
-#### Regression
+    10.3.3 Regression
 
-#### Responsible AI Practices
+  10.4 Responsible AI Practices
 
-#### Summary
+  10.5 Summary
 
-#### Exam Essentials
+  10.6 Exam Essentials
 
-#### Review Questions
+  10.7 Review Questions
 
-### Chapter 2Exploring Data and Building Data Pipelines
+11 Chapter 2Exploring Data and Building Data Pipelines
 
-#### Visualization
+  11.1 Visualization
 
-##### Box Plot
+    11.1.1 Box Plot
 
-##### Line Plot
+    11.1.2 Line Plot
 
-##### Bar Plot
+    11.1.3 Bar Plot
 
-##### Scatterplot
+    11.1.4 Scatterplot
 
-#### Statistics Fundamentals
+  11.2 Statistics Fundamentals
 
-##### Mean
+    11.2.1 Mean
 
-##### Median
+    11.2.2 Median
 
-##### Mode
+    11.2.3 Mode
 
-##### Outlier Detection
+    11.2.4 Outlier Detection
 
-##### Standard Deviation
+    11.2.5 Standard Deviation
 
-##### Correlation
+    11.2.6 Correlation
 
-#### Data Quality and Reliability
+  11.3 Data Quality and Reliability
 
-##### Data Skew
+    11.3.1 Data Skew
 
-##### Data Cleaning
+    11.3.2 Data Cleaning
 
-##### Scaling
+    11.3.3 Scaling
 
-##### Log Scaling
+    11.3.4 Log Scaling
 
-##### Z‐score
+    11.3.5 Z‐score
 
-##### Clipping
+    11.3.6 Clipping
 
-##### Handling Outliers
+    11.3.7 Handling Outliers
 
-#### Establishing Data Constraints
+  11.4 Establishing Data Constraints
 
-##### Exploration and Validation at Big‐Data Scale
+    11.4.1 Exploration and Validation at Big‐Data Scale
 
-#### Running TFDV on Google Cloud Platform
+  11.5 Running TFDV on Google Cloud Platform
 
-#### Organizing and Optimizing Training Datasets
+  11.6 Organizing and Optimizing Training Datasets
 
-##### Imbalanced Data
+    11.6.1 Imbalanced Data
 
-##### Data Splitting
+    11.6.2 Data Splitting
 
-##### Data Splitting Strategy for Online Systems
+    11.6.3 Data Splitting Strategy for Online Systems
 
-#### Handling Missing Data
+  11.7 Handling Missing Data
 
-#### Data Leakage
+  11.8 Data Leakage
 
-#### Summary
+  11.9 Summary
 
-#### Exam Essentials
+  11.10 Exam Essentials
 
-#### Review Questions
+  11.11 Review Questions
 
-### Chapter 3Feature Engineering
+12 Chapter 3Feature Engineering
 
-#### Consistent Data Preprocessing
+  12.1 Consistent Data Preprocessing
 
-#### Encoding Structured Data Types
+  12.2 Encoding Structured Data Types
 
-##### Why Transform Categorical Data?
+    12.2.1 Why Transform Categorical Data?
 
-##### Mapping Numeric Values
+    12.2.2 Mapping Numeric Values
 
-###### Normalizing
+      12.2.2.1 Normalizing
 
-###### Bucketing
+      12.2.2.2 Bucketing
 
-##### Mapping Categorical Values
+    12.2.3 Mapping Categorical Values
 
-###### Label Encoding or Integer Encoding
+      12.2.3.1 Label Encoding or Integer Encoding
 
-###### One‐Hot Encoding
+      12.2.3.2 One‐Hot Encoding
 
-###### Out of Vocab (OOV)
+      12.2.3.3 Out of Vocab (OOV)
 
-###### Feature Hashing
+      12.2.3.4 Feature Hashing
 
-###### Hybrid of Hashing and Vocabulary
+      12.2.3.5 Hybrid of Hashing and Vocabulary
 
-###### Embedding
+      12.2.3.6 Embedding
 
-##### Feature Selection
+    12.2.4 Feature Selection
 
-#### Class Imbalance
+  12.3 Class Imbalance
 
-##### Classification Threshold with Precision and Recall
+    12.3.1 Classification Threshold with Precision and Recall
 
-##### Area under the Curve (AUC)
+    12.3.2 Area under the Curve (AUC)
 
-###### AUC ROC
+      12.3.2.1 AUC ROC
 
-###### AUC PR
+      12.3.2.2 AUC PR
 
-#### Feature Crosses
+  12.4 Feature Crosses
 
-#### TensorFlow Transform
+  12.5 TensorFlow Transform
 
-##### TensorFlow Data API (tf.data)
+    12.5.1 TensorFlow Data API (tf.data)
 
-##### TensorFlow Transform
+    12.5.2 TensorFlow Transform
 
-#### GCP Data and ETL Tools
+  12.6 GCP Data and ETL Tools
 
-#### Summary
+  12.7 Summary
 
-#### Exam Essentials
+  12.8 Exam Essentials
 
-#### Review Questions
+  12.9 Review Questions
 
-### Chapter 4Choosing the Right ML Infrastructure
+13 Chapter 4Choosing the Right ML Infrastructure
 
-#### Pretrained vs. AutoML vs. Custom Models
+  13.1 Pretrained vs. AutoML vs. Custom Models
 
-#### Pretrained Models
+  13.2 Pretrained Models
 
-##### Vision AI
+    13.2.1 Vision AI
 
-##### Video AI
+    13.2.2 Video AI
 
-##### Natural Language AI
+    13.2.3 Natural Language AI
 
-##### Translation AI
+    13.2.4 Translation AI
 
-##### Speech‐to‐Text
+    13.2.5 Speech‐to‐Text
 
-##### Text‐to‐Speech
+    13.2.6 Text‐to‐Speech
 
-#### AutoML
+  13.3 AutoML
 
-##### AutoML for Tables or Structured Data
+    13.3.1 AutoML for Tables or Structured Data
 
-##### AutoML for Images and Video
+    13.3.2 AutoML for Images and Video
 
-##### AutoML for Text
+    13.3.3 AutoML for Text
 
-##### Recommendations AI/Retail AI
+    13.3.4 Recommendations AI/Retail AI
 
-##### Document AI
+    13.3.5 Document AI
 
-##### Dialogflow and Contact Center AI
+    13.3.6 Dialogflow and Contact Center AI
 
-###### Virtual Agent (Dialogflow)
+      13.3.6.1 Virtual Agent (Dialogflow)
 
-###### Agent Assist
+      13.3.6.2 Agent Assist
 
-###### Insights
+      13.3.6.3 Insights
 
-###### CCAI
+      13.3.6.4 CCAI
 
-#### Custom Training
+  13.4 Custom Training
 
-##### How a CPU Works
+    13.4.1 How a CPU Works
 
-##### GPU
+    13.4.2 GPU
 
-##### TPU
+    13.4.3 TPU
 
-###### How to Use TPUs
+      13.4.3.1 How to Use TPUs
 
-###### Advantages of TPUs
+      13.4.3.2 Advantages of TPUs
 
-###### When to Use CPUs, GPUs, and TPUs
+      13.4.3.3 When to Use CPUs, GPUs, and TPUs
 
-###### Cloud TPU Programming Model
+      13.4.3.4 Cloud TPU Programming Model
 
-#### Provisioning for Predictions
+  13.5 Provisioning for Predictions
 
-##### Scaling Behavior
+    13.5.1 Scaling Behavior
 
-##### Finding the Ideal Machine Type
+    13.5.2 Finding the Ideal Machine Type
 
-##### Edge TPU
+    13.5.3 Edge TPU
 
-##### Deploy to Android or iOS Device
+    13.5.4 Deploy to Android or iOS Device
 
-#### Summary
+  13.6 Summary
 
-#### Exam Essentials
+  13.7 Exam Essentials
 
-#### Review Questions
+  13.8 Review Questions
 
-### Chapter 5Architecting ML Solutions
+14 Chapter 5Architecting ML Solutions
 
-#### Designing Reliable, Scalable, and Highly Available ML Solutions
+  14.1 Designing Reliable, Scalable, and Highly Available ML Solutions
 
-#### Choosing an Appropriate ML Service
+  14.2 Choosing an Appropriate ML Service
 
-#### Data Collection and Data Management
+  14.3 Data Collection and Data Management
 
-##### Google Cloud Storage (GCS)
+    14.3.1 Google Cloud Storage (GCS)
 
-##### BigQuery
+    14.3.2 BigQuery
 
-##### Vertex AI Managed Datasets
+    14.3.3 Vertex AI Managed Datasets
 
-##### Vertex AI Feature Store
+    14.3.4 Vertex AI Feature Store
 
-##### NoSQL Data Store
+    14.3.5 NoSQL Data Store
 
-#### Automation and Orchestration
+  14.4 Automation and Orchestration
 
-##### Use Vertex AI Pipelines to Orchestrate the ML Workflow
+    14.4.1 Use Vertex AI Pipelines to Orchestrate the ML Workflow
 
-##### Use Kubeflow Pipelines for Flexible Pipeline Construction
+    14.4.2 Use Kubeflow Pipelines for Flexible Pipeline Construction
 
-##### Use TensorFlow Extended SDK to Leverage Pre‐built Components for Common Steps
+    14.4.3 Use TensorFlow Extended SDK to Leverage Pre‐built Components for Common Steps
 
-##### When to Use Which Pipeline
+    14.4.4 When to Use Which Pipeline
 
-#### Serving
+  14.5 Serving
 
-##### Offline or Batch Prediction
+    14.5.1 Offline or Batch Prediction
 
-##### Online Prediction
+    14.5.2 Online Prediction
 
-#### Summary
+  14.6 Summary
 
-#### Exam Essentials
+  14.7 Exam Essentials
 
-#### Review Questions
+  14.8 Review Questions
 
-### Chapter 6Building Secure ML Pipelines
+15 Chapter 6Building Secure ML Pipelines
 
-#### Building Secure ML Systems
+  15.1 Building Secure ML Systems
 
-##### Encryption at Rest
+    15.1.1 Encryption at Rest
 
-##### Encryption in Transit
+    15.1.2 Encryption in Transit
 
-##### Encryption in Use
+    15.1.3 Encryption in Use
 
-#### Identity and Access Management
+  15.2 Identity and Access Management
 
-##### IAM Permissions for Vertex AI Workbench
+    15.2.1 IAM Permissions for Vertex AI Workbench
 
-##### Securing a Network with Vertex AI
+    15.2.2 Securing a Network with Vertex AI
 
-###### Securing Vertex AI Workbench
+      15.2.2.1 Securing Vertex AI Workbench
 
-###### Securing Vertex AI Endpoints
+      15.2.2.2 Securing Vertex AI Endpoints
 
-###### Securing Vertex AI Training Jobs
+      15.2.2.3 Securing Vertex AI Training Jobs
 
-###### Federated Learning
+      15.2.2.4 Federated Learning
 
-###### Differential Privacy
+      15.2.2.5 Differential Privacy
 
-###### Format‐Preserving Encryption and Tokenization
+      15.2.2.6 Format‐Preserving Encryption and Tokenization
 
-#### Privacy Implications of Data Usage and Collection
+  15.3 Privacy Implications of Data Usage and Collection
 
-##### Google Cloud Data Loss Prevention
+    15.3.1 Google Cloud Data Loss Prevention
 
-##### Google Cloud Healthcare API for PHI Identification
+    15.3.2 Google Cloud Healthcare API for PHI Identification
 
-##### Best Practices for Removing Sensitive Data
+    15.3.3 Best Practices for Removing Sensitive Data
 
-#### Summary
+  15.4 Summary
 
-#### Exam Essentials
+  15.5 Exam Essentials
 
-#### Review Questions
+  15.6 Review Questions
 
-### Chapter 7Model Building
+16 Chapter 7Model Building
 
-#### Choice of Framework and Model Parallelism
+  16.1 Choice of Framework and Model Parallelism
 
-##### Data Parallelism
+    16.1.1 Data Parallelism
 
-###### Synchronous Training
+      16.1.1.1 Synchronous Training
 
-###### Asynchronous Training
+      16.1.1.2 Asynchronous Training
 
-##### Model Parallelism
+    16.1.2 Model Parallelism
 
-#### Modeling Techniques
+  16.2 Modeling Techniques
 
-##### Artificial Neural Network
+    16.2.1 Artificial Neural Network
 
-##### Deep Neural Network (DNN)
+    16.2.2 Deep Neural Network (DNN)
 
-##### Convolutional Neural Network
+    16.2.3 Convolutional Neural Network
 
-##### Recurrent Neural Network
+    16.2.4 Recurrent Neural Network
 
-##### What Loss Function to Use
+    16.2.5 What Loss Function to Use
 
-##### Gradient Descent
+    16.2.6 Gradient Descent
 
-##### Learning Rate
+    16.2.7 Learning Rate
 
-##### Batch
+    16.2.8 Batch
 
-##### Batch Size
+    16.2.9 Batch Size
 
-##### Epoch
+    16.2.10 Epoch
 
-##### Hyperparameters
+    16.2.11 Hyperparameters
 
-###### Tuning Batch Size
+      16.2.11.1 Tuning Batch Size
 
-###### Tuning Learning Rate
+      16.2.11.2 Tuning Learning Rate
 
-#### Transfer Learning
+  16.3 Transfer Learning
 
-#### Semi‐supervised Learning
+  16.4 Semi‐supervised Learning
 
-##### When You Need Semi‐supervised Learning
+    16.4.1 When You Need Semi‐supervised Learning
 
-##### Limitations of SSL
+    16.4.2 Limitations of SSL
 
-#### Data Augmentation
+  16.5 Data Augmentation
 
-##### Offline Augmentation
+    16.5.1 Offline Augmentation
 
-##### Online Augmentation
+    16.5.2 Online Augmentation
 
-#### Model Generalization and Strategies to Handle Overfitting and Underfitting
+  16.6 Model Generalization and Strategies to Handle Overfitting and Underfitting
 
-##### Bias Variance Trade‐Off
+    16.6.1 Bias Variance Trade‐Off
 
-##### Underfitting
+    16.6.2 Underfitting
 
-##### Overfitting
+    16.6.3 Overfitting
 
-##### Regularization
+    16.6.4 Regularization
 
-#### Summary
+  16.7 Summary
 
-#### Exam Essentials
+  16.8 Exam Essentials
 
-#### Review Questions
+  16.9 Review Questions
 
-### Chapter 8Model Training and Hyperparameter Tuning
+17 Chapter 8Model Training and Hyperparameter Tuning
 
-#### Ingestion of Various File Types into Training
+  17.1 Ingestion of Various File Types into Training
 
-##### Collect
+    17.1.1 Collect
 
-##### Process
+    17.1.2 Process
 
-###### Cloud Dataflow
+      17.1.2.1 Cloud Dataflow
 
-###### Cloud Data Fusion
+      17.1.2.2 Cloud Data Fusion
 
-###### Cloud Dataproc
+      17.1.2.3 Cloud Dataproc
 
-###### Cloud Composer
+      17.1.2.4 Cloud Composer
 
-###### Cloud Dataprep
+      17.1.2.5 Cloud Dataprep
 
-###### Summary of Processing Tools
+      17.1.2.6 Summary of Processing Tools
 
-##### Store and Analyze
+    17.1.3 Store and Analyze
 
-#### Developing Models in Vertex AI Workbench by Using Common Frameworks
+  17.2 Developing Models in Vertex AI Workbench by Using Common Frameworks
 
-##### Creating a Managed Notebook
+    17.2.1 Creating a Managed Notebook
 
-##### Exploring Managed JupyterLab Features
+    17.2.2 Exploring Managed JupyterLab Features
 
-##### Data Integration
+    17.2.3 Data Integration
 
-##### BigQuery Integration
+    17.2.4 BigQuery Integration
 
-##### Ability to Scale the Compute Up or Down
+    17.2.5 Ability to Scale the Compute Up or Down
 
-##### Git Integration for Team Collaboration
+    17.2.6 Git Integration for Team Collaboration
 
-##### Schedule or Execute a Notebook Code
+    17.2.7 Schedule or Execute a Notebook Code
 
-##### Creating a User‐Managed Notebook
+    17.2.8 Creating a User‐Managed Notebook
 
-#### Training a Model as a Job in Different Environments
+  17.3 Training a Model as a Job in Different Environments
 
-##### Training Workflow with Vertex AI
+    17.3.1 Training Workflow with Vertex AI
 
-##### Training Dataset Options in Vertex AI
+    17.3.2 Training Dataset Options in Vertex AI
 
-##### Pre‐built Containers
+    17.3.3 Pre‐built Containers
 
-##### Custom Containers
+    17.3.4 Custom Containers
 
-##### Distributed Training
+    17.3.5 Distributed Training
 
-#### Hyperparameter Tuning
+  17.4 Hyperparameter Tuning
 
-##### Why Hyperparameters Are Important
+    17.4.1 Why Hyperparameters Are Important
 
-##### Techniques to Speed Up Hyperparameter Optimization
+    17.4.2 Techniques to Speed Up Hyperparameter Optimization
 
-##### How Vertex AI Hyperparameter Tuning Works
+    17.4.3 How Vertex AI Hyperparameter Tuning Works
 
-##### Vertex AI Vizier
+    17.4.4 Vertex AI Vizier
 
-###### How Vertex AI Vizier Differs from Custom Training
+      17.4.4.1 How Vertex AI Vizier Differs from Custom Training
 
-#### Tracking Metrics During Training
+  17.5 Tracking Metrics During Training
 
-##### Interactive Shell
+    17.5.1 Interactive Shell
 
-##### TensorFlow Profiler
+    17.5.2 TensorFlow Profiler
 
-##### What‐If Tool
+    17.5.3 What‐If Tool
 
-#### Retraining/Redeployment Evaluation
+  17.6 Retraining/Redeployment Evaluation
 
-##### Data Drift
+    17.6.1 Data Drift
 
-##### Concept Drift
+    17.6.2 Concept Drift
 
-##### When Should a Model Be Retrained?
+    17.6.3 When Should a Model Be Retrained?
 
-#### Unit Testing for Model Training and Serving
+  17.7 Unit Testing for Model Training and Serving
 
-##### Testing for Updates in API Calls
+    17.7.1 Testing for Updates in API Calls
 
-##### Testing for Algorithmic Correctness
+    17.7.2 Testing for Algorithmic Correctness
 
-#### Summary
+  17.8 Summary
 
-#### Exam Essentials
+  17.9 Exam Essentials
 
-#### Review Questions
+  17.10 Review Questions
 
-### Chapter 9Model Explainability on Vertex AI
+18 Chapter 9Model Explainability on Vertex AI
 
-#### Model Explainability on Vertex AI
+  18.1 Model Explainability on Vertex AI
 
-##### Explainable AI
+    18.1.1 Explainable AI
 
-##### Interpretability and Explainability
+    18.1.2 Interpretability and Explainability
 
-##### Feature Importance
+    18.1.3 Feature Importance
 
-##### Vertex Explainable AI
+    18.1.4 Vertex Explainable AI
 
-###### Feature Attribution
+      18.1.4.1 Feature Attribution
 
-###### Vertex AI Example–Based Explanations
+      18.1.4.2 Vertex AI Example–Based Explanations
 
-##### Data Bias and Fairness
+    18.1.5 Data Bias and Fairness
 
-##### ML Solution Readiness
+    18.1.6 ML Solution Readiness
 
-##### How to Set Up Explanations in the Vertex AI
+    18.1.7 How to Set Up Explanations in the Vertex AI
 
-#### Summary
+  18.2 Summary
 
-#### Exam Essentials
+  18.3 Exam Essentials
 
-#### Review Questions
+  18.4 Review Questions
 
-### Chapter 10Scaling Models in Production
+19 Chapter 10Scaling Models in Production
 
-#### Scaling Prediction Service
+  19.1 Scaling Prediction Service
 
-##### TensorFlow Serving
+    19.1.1 TensorFlow Serving
 
-###### Serving a Saved Model with TensorFlow Serving
+      19.1.1.1 Serving a Saved Model with TensorFlow Serving
 
-#### Serving (Online, Batch, and Caching)
+  19.2 Serving (Online, Batch, and Caching)
 
-##### Real‐Time Static and Dynamic Reference Features
+    19.2.1 Real‐Time Static and Dynamic Reference Features
 
-##### Pre‐computing and Caching Prediction
+    19.2.2 Pre‐computing and Caching Prediction
 
-#### Google Cloud Serving Options
+  19.3 Google Cloud Serving Options
 
-##### Online Predictions
+    19.3.1 Online Predictions
 
-###### Deploying the Model
+      19.3.1.1 Deploying the Model
 
-###### Deploying a Model Using an API
+        19.3.1.1.1 Deploying a Model Using an API
 
-###### Deploying a Model Using the Google Cloud Console
+        19.3.1.1.2 Deploying a Model Using the Google Cloud Console
 
-###### Make Predictions
+      19.3.1.2 Make Predictions
 
-###### A/B Testing of Different Versions of a Model
+      19.3.1.3 A/B Testing of Different Versions of a Model
 
-###### Undeploy Endpoints
+      19.3.1.4 Undeploy Endpoints
 
-###### Send an Online Explanation Request
+      19.3.1.5 Send an Online Explanation Request
 
-##### Batch Predictions
+    19.3.2 Batch Predictions
 
-#### Hosting Third‐Party Pipelines (MLflow) on Google Cloud
+  19.4 Hosting Third‐Party Pipelines (MLflow) on Google Cloud
 
-#### Testing for Target Performance
+  19.5 Testing for Target Performance
 
-#### Configuring Triggers and Pipeline Schedules
+  19.6 Configuring Triggers and Pipeline Schedules
 
-#### Summary
+  19.7 Summary
 
-#### Exam Essentials
+  19.8 Exam Essentials
 
-#### Review Questions
+  19.9 Review Questions
 
-### Chapter 11Designing ML Training Pipelines
+20 Chapter 11Designing ML Training Pipelines
 
-#### Orchestration Frameworks
+  20.1 Orchestration Frameworks
 
-##### Kubeflow Pipelines
+    20.1.1 Kubeflow Pipelines
 
-##### Vertex AI Pipelines
+    20.1.2 Vertex AI Pipelines
 
-##### Apache Airflow
+    20.1.3 Apache Airflow
 
-##### Cloud Composer
+    20.1.4 Cloud Composer
 
-##### Comparison of Tools
+    20.1.5 Comparison of Tools
 
-#### Identification of Components, Parameters, Triggers, and Compute Needs
+  20.2 Identification of Components, Parameters, Triggers, and Compute Needs
 
-##### Schedule the Workflows with Kubeflow Pipelines
+    20.2.1 Schedule the Workflows with Kubeflow Pipelines
 
-##### Schedule Vertex AI Pipelines
+    20.2.2 Schedule Vertex AI Pipelines
 
-#### System Design with Kubeflow/TFX
+  20.3 System Design with Kubeflow/TFX
 
-##### System Design with Kubeflow DSL
+    20.3.1 System Design with Kubeflow DSL
 
-###### Kubeflow Pipelines Components
+      20.3.1.1 Kubeflow Pipelines Components
 
-##### System Design with TFX
+    20.3.2 System Design with TFX
 
-#### Hybrid or Multicloud Strategies
+  20.4 Hybrid or Multicloud Strategies
 
-#### Summary
+  20.5 Summary
 
-#### Exam Essentials
+  20.6 Exam Essentials
 
-#### Review Questions
+  20.7 Review Questions
 
-### Chapter 12Model Monitoring, Tracking, and Auditing Metadata
+21 Chapter 12Model Monitoring, Tracking, and Auditing Metadata
 
-#### Model Monitoring
+  21.1 Model Monitoring
 
-##### Concept Drift
+    21.1.1 Concept Drift
 
-##### Data Drift
+    21.1.2 Data Drift
 
-#### Model Monitoring on Vertex AI
+  21.2 Model Monitoring on Vertex AI
 
-##### Drift and Skew Calculation
+    21.2.1 Drift and Skew Calculation
 
-###### Practical Considerations of Enabling Monitoring
+      21.2.1.1 Practical Considerations of Enabling Monitoring
 
-##### Input Schemas
+    21.2.2 Input Schemas
 
-###### Automatic Schema Parsing
+      21.2.2.1 Automatic Schema Parsing
 
-###### Custom Schema
+      21.2.2.2 Custom Schema
 
-#### Logging Strategy
+  21.3 Logging Strategy
 
-##### Types of Prediction Logs
+    21.3.1 Types of Prediction Logs
 
-###### Container Logging
+      21.3.1.1 Container Logging
 
-###### Access Logging
+      21.3.1.2 Access Logging
 
-###### Request‐Response Logging
+      21.3.1.3 Request‐Response Logging
 
-##### Log Settings
+    21.3.2 Log Settings
 
-##### Model Monitoring and Logging
+    21.3.3 Model Monitoring and Logging
 
-#### Model and Dataset Lineage
+  21.4 Model and Dataset Lineage
 
-##### Vertex ML Metadata
+    21.4.1 Vertex ML Metadata
 
-###### Manage ML Metadataschemas
+      21.4.1.1 Manage ML Metadataschemas
 
-###### Vertex AI Pipelines
+      21.4.1.2 Vertex AI Pipelines
 
-#### Vertex AI Experiments
+  21.5 Vertex AI Experiments
 
-#### Vertex AI Debugging
+  21.6 Vertex AI Debugging
 
-#### Summary
+  21.7 Summary
 
-#### Exam Essentials
+  21.8 Exam Essentials
 
-#### Review Questions
+  21.9 Review Questions
 
-### Chapter 13Maintaining ML Solutions
+22 Chapter 13Maintaining ML Solutions
 
-#### MLOps Maturity
+  22.1 MLOps Maturity
 
-##### MLOps Level 0: Manual/Tactical Phase
+    22.1.1 MLOps Level 0: Manual/Tactical Phase
 
-###### Key Features of Level 0
+      22.1.1.1 Key Features of Level 0
 
-###### Challenges
+      22.1.1.2 Challenges
 
-##### MLOps Level 1: Strategic Automation Phase
+    22.1.2 MLOps Level 1: Strategic Automation Phase
 
-###### Key Features of MLOps Level 1
+      22.1.2.1 Key Features of MLOps Level 1
 
-###### Challenges
+      22.1.2.2 Challenges
 
-##### MLOps Level 2: CI/CD Automation, Transformational Phase
+    22.1.3 MLOps Level 2: CI/CD Automation, Transformational Phase
 
-###### Key Features of Level 2
+      22.1.3.1 Key Features of Level 2
 
-#### Retraining and Versioning Models
+  22.2 Retraining and Versioning Models
 
-##### Triggers for Retraining
+    22.2.1 Triggers for Retraining
 
-##### Versioning Models
+    22.2.2 Versioning Models
 
-#### Feature Store
+  22.3 Feature Store
 
-##### Solution
+    22.3.1 Solution
 
-##### Data Model
+    22.3.2 Data Model
 
-##### Ingestion and Serving
+    22.3.3 Ingestion and Serving
 
-#### Vertex AI Permissions Model
+  22.4 Vertex AI Permissions Model
 
-##### Custom Service Account
+    22.4.1 Custom Service Account
 
-##### Access Transparency in Vertex AI
+    22.4.2 Access Transparency in Vertex AI
 
-#### Common Training and Serving Errors
+  22.5 Common Training and Serving Errors
 
-##### Training Time Errors
+    22.5.1 Training Time Errors
 
-##### Serving Time Errors
+    22.5.2 Serving Time Errors
 
-##### TensorFlow Data Validation
+    22.5.3 TensorFlow Data Validation
 
-##### Vertex AI Debugging Shell
+    22.5.4 Vertex AI Debugging Shell
 
-#### Summary
+  22.6 Summary
 
-#### Exam Essentials
+  22.7 Exam Essentials
 
-#### Review Questions
+  22.8 Review Questions
 
-### Chapter 14BigQuery ML
+23 Chapter 14BigQuery ML
 
-#### BigQuery – Data Access
+  23.1 BigQuery – Data Access
 
-#### BigQuery ML Algorithms
+  23.2 BigQuery ML Algorithms
 
-##### Model Training
+    23.2.1 Model Training
 
-##### Model Evaluation
+    23.2.2 Model Evaluation
 
-##### Prediction
+    23.2.3 Prediction
 
-#### Explainability in BigQuery ML
+  23.3 Explainability in BigQuery ML
 
-#### BigQuery ML vs. Vertex AI Tables
+  23.4 BigQuery ML vs. Vertex AI Tables
 
-#### Interoperability with Vertex AI
+  23.5 Interoperability with Vertex AI
 
-##### Access BigQuery Public Dataset
+    23.5.1 Access BigQuery Public Dataset
 
-##### Import BigQuery Data into Vertex AI
+    23.5.2 Import BigQuery Data into Vertex AI
 
-##### Access BigQuery Data from Vertex AI Workbench Notebooks
+    23.5.3 Access BigQuery Data from Vertex AI Workbench Notebooks
 
-##### Analyze Test Prediction Data in BigQuery
+    23.5.4 Analyze Test Prediction Data in BigQuery
 
-##### Export Vertex AI Batch Prediction Results
+    23.5.5 Export Vertex AI Batch Prediction Results
 
-##### Export BigQuery Models into Vertex AI
+    23.5.6 Export BigQuery Models into Vertex AI
 
-#### BigQuery Design Patterns
+  23.6 BigQuery Design Patterns
 
-##### Hashed Feature
+    23.6.1 Hashed Feature
 
-##### Transforms
+    23.6.2 Transforms
 
-#### Summary
+  23.7 Summary
 
-#### Exam Essentials
+  23.8 Exam Essentials
 
-#### Review Questions
+  23.9 Review Questions
 
-### AppendixAnswers to Review Questions
+24 AppendixAnswers to Review Questions
 
-#### Chapter 1: Framing ML Problems
+  24.1 Chapter 1: Framing ML Problems
 
-#### Chapter 2: Exploring Data and Building Data Pipelines
+  24.2 Chapter 2: Exploring Data and Building Data Pipelines
 
-#### Chapter 3: Feature Engineering
+  24.3 Chapter 3: Feature Engineering
 
-#### Chapter 4: Choosing the Right ML Infrastructure
+  24.4 Chapter 4: Choosing the Right ML Infrastructure
 
-#### Chapter 5: Architecting ML Solutions
+  24.5 Chapter 5: Architecting ML Solutions
 
-#### Chapter 6: Building Secure ML Pipelines
+  24.6 Chapter 6: Building Secure ML Pipelines
 
-#### Chapter 7: Model Building
+  24.7 Chapter 7: Model Building
 
-#### Chapter 8: Model Training and Hyperparameter Tuning
+  24.8 Chapter 8: Model Training and Hyperparameter Tuning
 
-#### Chapter 9: Model Explainability on Vertex AI
+  24.9 Chapter 9: Model Explainability on Vertex AI
 
-#### Chapter 10: Scaling Models in Production
+  24.10 Chapter 10: Scaling Models in Production
 
-#### Chapter 11: Designing ML Training Pipelines
+  24.11 Chapter 11: Designing ML Training Pipelines
 
-#### Chapter 12: Model Monitoring, Tracking, and Auditing Metadata
+  24.12 Chapter 12: Model Monitoring, Tracking, and Auditing Metadata
 
-#### Chapter 13: Maintaining ML Solutions
+  24.13 Chapter 13: Maintaining ML Solutions
 
-#### Chapter 14: BigQuery ML
+  24.14 Chapter 14: BigQuery ML
 
-### Index
+25 Index
 
-#### A
+  25.1 A
 
-#### B
+  25.2 B
 
-#### C
+  25.3 C
 
-#### D
+  25.4 D
 
-#### E
+  25.5 E
 
-#### F
+  25.6 F
 
-#### G
+  25.7 G
 
-#### H
+  25.8 H
 
-#### I
+  25.9 I
 
-#### J
+  25.10 J
 
-#### K
+  25.11 K
 
-#### L
+  25.12 L
 
-#### M
+  25.13 M
 
-#### N
+  25.14 N
 
-#### O
+  25.15 O
 
-#### P
+  25.16 P
 
-#### Q
+  25.17 Q
 
-#### R
+  25.18 R
 
-#### S
+  25.19 S
 
-#### T
+  25.20 T
 
-#### U
+  25.21 U
 
-#### V
+  25.22 V
 
-#### W
+  25.23 W
 
-#### Z
+  25.24 Z
 
-### Online Test Bank
+26 Online Test Bank
 
-#### Register and Access the Online Test Bank
+  26.1 Register and Access the Online Test Bank
 
-### WILEY END USER LICENSE AGREEMENT
+27 WILEY END USER LICENSE AGREEMENT
 
 ---
 

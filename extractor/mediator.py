@@ -1,219 +1,179 @@
-#!/usr/bin/env python3
-"""
-Mediator para comunicación con el servicio Ollama
-
-Este módulo proporciona funciones para interactuar con el servicio Ollama
-que está ejecutándose en el contenedor ollama-container.
-"""
-
-import requests
+from hola import EPUBExtractor
+from ia_agent import AIAgent
+from typing import Dict, Any
 import json
-import os
-import time
-from typing import Dict, Any, Optional
 
 
-class OllamaMediator:
-    def __init__(self, host: str = None):
+class Mediator:
+    """Mediator that connects EPUB Extractor with AI Agent to generate summaries"""
+    
+    def __init__(self, ollama_host: str = "http://ollama:11434"):
+        self.extractor = EPUBExtractor()
+        self.ai_agent = AIAgent(ollama_host)
+    
+    def process_epub(self, epub_path: str, generate_summaries: bool = True) -> Dict[str, Any]:
         """
-        Inicializa el mediador de Ollama.
+        Process EPUB file: extract structure and optionally generate summaries
         
         Args:
-            host: URL del servicio Ollama. Si no se proporciona, usa la variable de entorno OLLAMA_HOST
-        """
-        self.host = host or os.getenv('OLLAMA_HOST', 'http://ollama:11434')
-        self.session = requests.Session()
-        self.session.timeout = 30
-        
-    def check_connection(self) -> bool:
-        """
-        Verifica si el servicio Ollama está disponible.
-        
+            epub_path: Path to EPUB file
+            generate_summaries: If True, generate AI summaries for all content
+            
         Returns:
-            bool: True si el servicio está disponible, False en caso contrario
+            Dict with complete book structure including summaries
         """
-        try:
-            response = self.session.get(f"{self.host}/api/tags")
-            return response.status_code == 200
-        except requests.exceptions.RequestException as e:
-            print(f"Error connecting to Ollama: {e}")
-            return False
-    
-    def list_models(self) -> Optional[Dict[str, Any]]:
-        """
-        Lista los modelos disponibles en Ollama.
+        # Step 1: Extract structure
+        print("="*80)
+        print("STEP 1: EXTRACTING STRUCTURE")
+        print("="*80)
+        structure = self.extractor.extract_structure(epub_path)
         
-        Returns:
-            Dict con información de los modelos o None si hay error
-        """
-        try:
-            response = self.session.get(f"{self.host}/api/tags")
-            if response.status_code == 200:
-                return response.json()
-            else:
-                print(f"Error listing models: {response.status_code}")
-                return None
-        except requests.exceptions.RequestException as e:
-            print(f"Error listing models: {e}")
-            return None
+        # Step 2: Generate summaries if requested
+        if generate_summaries:
+            print("\n" + "="*80)
+            print("STEP 2: GENERATING SUMMARIES WITH AI")
+            print("="*80)
+            
+            # Check AI connection
+            if not self.ai_agent.test_connection():
+                print("⚠️  Could not connect to Ollama. Continuing without summaries.")
+                return structure
+            
+            # Add summaries recursively
+            self._add_summaries_recursive(structure)
+            print("\n✓ All summaries generated successfully")
+        
+        return structure
     
-    def pull_model(self, model_name: str) -> bool:
+    def _add_summaries_recursive(self, structure: Dict[str, Any], indent: int = 0) -> None:
         """
-        Descarga un modelo si no está disponible.
+        Add AI-generated summaries recursively to entire structure
         
         Args:
-            model_name: Nombre del modelo a descargar
+            structure: Dictionary with book structure
+            indent: Indentation level for logging
+        """
+        for title, info in structure.items():
+            prefix = "  " * indent
+            print(f"{prefix}📝 Summarizing: {title}")
+            
+            # Generate summary for content at this level
+            if info.get("content"):
+                info["summary"] = self.ai_agent.summarize_content(info["content"])
+            else:
+                info["summary"] = ""
+            
+            # Process subsections recursively
+            if info.get("subsections"):
+                self._add_summaries_recursive(info["subsections"], indent + 1)
+    
+    def print_structure(self, structure: Dict[str, Any], indent: int = 0, show_summaries: bool = True) -> None:
+        """
+        Print book structure in readable format
+        
+        Args:
+            structure: Dictionary with structure
+            indent: Indentation level
+            show_summaries: If True, show summaries
+        """
+        for title, info in structure.items():
+            prefix = "  " * indent
+            subsection_count = len(info.get("subsections", {}))
+            print(f"{prefix}→ {title} ({subsection_count} subsections)")
+            
+            if show_summaries and info.get("summary"):
+                summary_preview = info["summary"][:150] + "..." if len(info["summary"]) > 150 else info["summary"]
+                print(f"{prefix}  💡 {summary_preview}")
+            
+            if info.get("subsections"):
+                self.print_structure(info["subsections"], indent + 1, show_summaries)
+    
+    def save_to_json(self, structure: Dict[str, Any], output_path: str) -> None:
+        """
+        Save complete structure with summaries to JSON file
+        
+        Args:
+            structure: Book structure with summaries
+            output_path: Output file path
+        """
+        with open(output_path, 'w', encoding='utf-8') as f:
+            json.dump(structure, f, ensure_ascii=False, indent=2)
+        print(f"✓ Structure saved to: {output_path}")
+    
+    def get_statistics(self, structure: Dict[str, Any]) -> Dict[str, int]:
+        """
+        Calculate statistics about the processed structure
+        
+        Args:
+            structure: Book structure
             
         Returns:
-            bool: True si se descargó correctamente, False en caso contrario
+            Dict with statistics
         """
-        try:
-            print(f"Pulling model {model_name}...")
-            response = self.session.post(
-                f"{self.host}/api/pull",
-                json={"name": model_name},
-                stream=True
-            )
-            
-            if response.status_code == 200:
-                for line in response.iter_lines():
-                    if line:
-                        data = json.loads(line)
-                        if "status" in data:
-                            print(f"Status: {data['status']}")
-                        if data.get("status") == "success":
-                            return True
-                return True
-            else:
-                print(f"Error pulling model: {response.status_code}")
-                return False
+        stats = {
+            "total_sections": 0,
+            "total_content_chars": 0,
+            "total_summary_chars": 0,
+            "sections_with_summaries": 0
+        }
+        
+        def count_recursive(struct: Dict[str, Any]):
+            for title, info in struct.items():
+                stats["total_sections"] += 1
+                stats["total_content_chars"] += len(info.get("content", ""))
                 
-        except requests.exceptions.RequestException as e:
-            print(f"Error pulling model: {e}")
-            return False
-    
-    def generate_response(self, prompt: str, model: str = "llama3.2", stream: bool = False) -> Optional[str]:
-        """
-        Genera una respuesta usando el modelo especificado.
-        
-        Args:
-            prompt: La pregunta o prompt a enviar
-            model: Nombre del modelo a usar (default: llama3.2)
-            stream: Si usar streaming o no
-            
-        Returns:
-            str: La respuesta generada o None si hay error
-        """
-        try:
-            payload = {
-                "model": model,
-                "prompt": prompt,
-                "stream": stream
-            }
-            
-            print(f"Sending request to Ollama with model: {model}")
-            print(f"Prompt: {prompt}")
-            
-            response = self.session.post(
-                f"{self.host}/api/generate",
-                json=payload,
-                stream=stream
-            )
-            
-            if response.status_code == 200:
-                if stream:
-                    # Manejo de respuesta en streaming
-                    full_response = ""
-                    for line in response.iter_lines():
-                        if line:
-                            data = json.loads(line)
-                            if "response" in data:
-                                full_response += data["response"]
-                                print(data["response"], end="", flush=True)
-                            if data.get("done", False):
-                                break
-                    print()  # Nueva línea al final
-                    return full_response
-                else:
-                    # Respuesta completa
-                    data = response.json()
-                    return data.get("response", "No response received")
-            else:
-                print(f"Error generating response: {response.status_code}")
-                print(f"Response: {response.text}")
-                return None
+                if info.get("summary"):
+                    stats["sections_with_summaries"] += 1
+                    stats["total_summary_chars"] += len(info["summary"])
                 
-        except requests.exceptions.RequestException as e:
-            print(f"Error generating response: {e}")
-            return None
-    
-    def ask_question(self, question: str, model: str = "llama3.2") -> Optional[str]:
-        """
-        Función simplificada para hacer una pregunta.
+                if info.get("subsections"):
+                    count_recursive(info["subsections"])
         
-        Args:
-            question: La pregunta a hacer
-            model: Modelo a usar (default: llama3.2)
-            
-        Returns:
-            str: La respuesta o None si hay error
-        """
-        # Verificar conexión primero
-        if not self.check_connection():
-            print("❌ No se puede conectar al servicio Ollama")
-            print("Asegúrate de que el contenedor ollama-container esté ejecutándose")
-            return None
-        
-        # Verificar si el modelo está disponible
-        models = self.list_models()
-        if models:
-            available_models = [m["name"] for m in models.get("models", [])]
-            if not any(model in m for m in available_models):
-                print(f"Modelo {model} no encontrado. Intentando descargarlo...")
-                if not self.pull_model(model):
-                    print(f"❌ No se pudo descargar el modelo {model}")
-                    return None
-        
-        # Generar respuesta
-        return self.generate_response(question, model)
+        count_recursive(structure)
+        return stats
 
 
-def test_ollama_connection():
-    """
-    Función de prueba para verificar la conexión con Ollama.
-    """
-    print("🔍 Probando conexión con Ollama...")
-    
-    mediator = OllamaMediator()
-    
-    # Verificar conexión
-    if mediator.check_connection():
-        print("✅ Conexión exitosa con Ollama")
-        
-        # Listar modelos disponibles
-        models = mediator.list_models()
-        if models:
-            print("\n📚 Modelos disponibles:")
-            for model in models.get("models", []):
-                print(f"  - {model['name']}")
-        
-        # Hacer una pregunta de prueba
-        question = "¿Qué es un archivo EPUB y cómo está estructurado?"
-        print(f"\n🤔 Pregunta: {question}")
-        print("\n💬 Respuesta:")
-        print("-" * 50)
-        
-        response = mediator.ask_question(question)
-        if response:
-            print(response)
-            print("-" * 50)
-            print("✅ Prueba completada exitosamente")
-        else:
-            print("❌ No se pudo obtener respuesta")
-    else:
-        print("❌ No se pudo conectar a Ollama")
-        print("Verifica que el servicio esté ejecutándose con: docker compose ps")
-
-
+# Usage example
 if __name__ == "__main__":
-    test_ollama_connection()
+    # Create mediator
+    mediator = Mediator(ollama_host="http://ollama:11434")
+    
+    # Process EPUB with summaries
+    epub_path = "my_book.epub"
+    structure = mediator.process_epub(epub_path, generate_summaries=True)
+    
+    # Display structure with summaries
+    print("\n" + "="*80)
+    print("BOOK STRUCTURE WITH SUMMARIES")
+    print("="*80 + "\n")
+    mediator.print_structure(structure, show_summaries=True)
+    
+    # Show statistics
+    print("\n" + "="*80)
+    print("STATISTICS")
+    print("="*80)
+    stats = mediator.get_statistics(structure)
+    for key, value in stats.items():
+        print(f"{key}: {value}")
+    
+    # Save to JSON
+    output_path = "book_with_summaries.json"
+    mediator.save_to_json(structure, output_path)
+    
+    # Example: Access specific summary
+    print("\n" + "="*80)
+    print("EXAMPLE OF SUMMARY ACCESS")
+    print("="*80)
+    
+    for chapter_title, chapter_data in structure.items():
+        print(f"\n📖 Chapter: {chapter_title}")
+        if chapter_data.get("summary"):
+            print(f"💡 Summary: {chapter_data['summary']}")
+        
+        # Show first subsection if exists
+        if chapter_data.get("subsections"):
+            first_subsection = list(chapter_data["subsections"].keys())[0]
+            print(f"\n  📄 Subsection: {first_subsection}")
+            print(f"  💡 Summary: {chapter_data['subsections'][first_subsection].get('summary', 'N/A')}")
+        
+        break  # Only show first chapter as example
