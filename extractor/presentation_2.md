@@ -118,6 +118,7 @@ You bring the data; Vertex AI handles algorithm selection and training.
 - Solves text-related problems like classification and sentiment analysis.  
 - Easy model building via console or SDKs.
 
+---
 
 ## 13.3.4. Recommendations AI / Retail AI
 
@@ -127,6 +128,12 @@ You bring the data; Vertex AI handles algorithm selection and training.
   - **Recommendations AI** (personalized product suggestions)  
 - Serverless and continuously fine-tuned.
 
+Common recommendation types:
+
+- Others you may like → predicts next likely purchase.
+- Frequently bought together → suggests cart expansion items.
+- Recommended for you → personalizes homepage suggestions.
+-Similar items → shows alternative products with similar attributes.
 ---
 
 ## 13.3.5. Document AI

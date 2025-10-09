@@ -1,5 +1,6 @@
 from typing import Dict, Any, Optional
 import os
+import json
 
 
 class MarpExporter:
@@ -78,6 +79,90 @@ class MarpExporter:
             f.write('\n\n---\n\n'.join(slides))
         
         print(f"✓ Marp presentation exported to: {output_path}")
+        print(f"  Total slides: {len(slides)}")
+        print(f"\n💡 To preview: Open {output_path} in VSCode with Marp extension")
+
+    def export_from_json(
+        self,
+        json_path: str,
+        output_path: str,
+        title: Optional[str] = None,
+        include_summaries: bool = True,
+        include_content: bool = False,
+        max_depth: int = 3,
+    ) -> None:
+        """
+        Load a saved book structure (book_with_summaries.json) and export to Marp.
+
+        This method ensures strict slide separation without extra blank lines:
+        each slide is separated by a single line containing '---'.
+
+        Args:
+            json_path: Path to JSON file containing the book structure with summaries
+            output_path: Path to save the Marp markdown file
+            title: Presentation title (defaults to first top-level section or a generic title)
+            include_summaries: Include summary slides
+            include_content: Include full content slides (can be very long)
+            max_depth: Maximum heading depth to include
+        """
+        if not os.path.exists(json_path):
+            raise FileNotFoundError(f"JSON structure not found: {json_path}")
+
+        # Ensure output directory exists
+        out_dir = os.path.dirname(output_path)
+        if out_dir:
+            os.makedirs(out_dir, exist_ok=True)
+
+        # Load structure from JSON
+        with open(json_path, 'r', encoding='utf-8') as f:
+            structure: Dict[str, Any] = json.load(f)
+
+        # Derive title if not provided
+        if not title:
+            title = next(iter(structure.keys()), "Book Summary Presentation")
+
+        # Build slides (without writing yet)
+        slides: list[str] = []
+
+        # Title slide and TOC
+        slides.append(self._generate_title_slide(title))
+        slides.append(self._generate_toc(structure))
+
+        # Generate slides from structure
+        self._process_structure_recursive(
+            structure,
+            slides,
+            level=1,
+            include_summaries=include_summaries,
+            include_content=include_content,
+            max_depth=max_depth
+        )
+
+        # Prepare front matter
+        front_matter = self._generate_front_matter()
+
+        # Strip any trailing '---' inside slide blocks to avoid duplicate separators
+        # def _strip_slide_separator(text: str) -> str:
+        #     t = text.rstrip()
+        #     lines = t.split('\n')
+        #     # Remove trailing blank lines
+        #     while lines and not lines[-1].strip():
+        #         lines.pop()
+        #     # Remove trailing separator if present
+        #     if lines and lines[-1].strip() == '---':
+        #         lines.pop()
+        #     return '\n'.join(lines).rstrip()
+
+        # strict_slides = [_strip_slide_separator(s) for s in slides]
+
+        # Compose final content: front matter block + strict slide separation
+        final_content = front_matter + '\n' + ''.join(slides)
+
+        with open(output_path, 'w', encoding='utf-8') as f:
+            f.write(final_content)
+
+        print(f"✓ Marp presentation exported from JSON to: {output_path}")
+        print(f"  Source JSON: {json_path}")
         print(f"  Total slides: {len(slides)}")
         print(f"\n💡 To preview: Open {output_path} in VSCode with Marp extension")
     
@@ -186,19 +271,19 @@ class MarpExporter:
         """Generate a section title slide"""
         # Use different styles based on level
         if level == 1:
-            return f"""<!-- _class: lead -->
+            return f"""# {section_number} {title}
 
-# {section_number} {title}
+---
 
----"""
+"""
         elif level == 2:
             return f"""## {section_number} {title}
 
----"""
+"""
         else:
             return f"""### {section_number} {title}
 
----"""
+"""
     
     def _generate_summary_slide(self, title: str, summary: str, section_number: str) -> str:
         """Generate a summary slide"""
@@ -206,11 +291,11 @@ class MarpExporter:
         max_chars = 800
         
         if len(summary) <= max_chars:
-            return f"""### {section_number} Summary: {title}
+            return f"""{summary}
 
-{summary}
+---
 
----"""
+"""
         else:
             # Split into multiple slides
             words = summary.split()
@@ -233,13 +318,12 @@ class MarpExporter:
             slides = []
             for i, chunk in enumerate(chunks, 1):
                 part_label = f" (Part {i}/{len(chunks)})" if len(chunks) > 1 else ""
-                slides.append(f"""### {section_number} Summary: {title}{part_label}
+                slides.append(f"""{chunk}
 
-{chunk}
-
----""")
+---
+""")
             
-            return '\n\n---\n\n'.join(slides)
+            return '\n'.join(slides)
     
     def _generate_content_slide(self, title: str, content: str, section_number: str) -> str:
         """Generate a content slide"""
@@ -253,7 +337,7 @@ class MarpExporter:
 
 {content}
 
----"""
+"""
     
     def export_chapter(
         self,

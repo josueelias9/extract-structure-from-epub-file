@@ -20,7 +20,7 @@ Rules:
 - Use clear and direct language
 - Preserve key points and essential information
 - Give the summary inmediately without any preamble or additional commentary
-- summary must be two sentences max"""
+- summary must be only one sentence"""
     
     def summarize_content(self, content: str) -> str:
         """

@@ -1,21 +1,7 @@
 {
     "version": "0.2.0",
     "configurations": [
-        {
-            "name": "Debug EPUB to PDF Script",
-            "type": "debugpy",
-            "request": "launch",
-            "program": "${workspaceFolder}/epub_to_pdf.py",
-            "args": [
-                "my_epub.epub"
-            ],
-            "console": "integratedTerminal",
-            "cwd": "${workspaceFolder}",
-            "env": {},
-            "python": "${command:python.interpreterPath}",
-            "justMyCode": true,
-            "stopOnEntry": false
-        },
+
                 {
             "name": "try",
             "type": "debugpy",

@@ -3,6 +3,7 @@ from ia_agent import AIAgent
 from marp_exporter import MarpExporter
 from typing import Dict, Any
 import json
+import os
 
 
 class Mediator:
@@ -142,6 +143,40 @@ class Mediator:
         count_recursive(structure)
         return stats
 
+    def generate_marp_from_json(
+        self,
+        json_path: str,
+        marp_output_path: str,
+        title: str | None = None,
+        include_summaries: bool = True,
+        include_content: bool = False,
+        max_depth: int = 3,
+    ) -> None:
+        """
+        Generate a Marp presentation directly from a saved JSON structure.
+
+        Args:
+            json_path: Path to the JSON structure file (e.g., output/book_with_summaries.json)
+            marp_output_path: Path to the Marp markdown output (e.g., output/book_presentation.md)
+            title: Optional presentation title; defaults to the first top-level section
+            include_summaries: Include summary slides
+            include_content: Include full content slides
+            max_depth: Maximum depth to include
+        """
+        # Ensure output directory exists
+        out_dir = os.path.dirname(marp_output_path)
+        if out_dir:
+            os.makedirs(out_dir, exist_ok=True)
+
+        self.marp_exporter.export_from_json(
+            json_path=json_path,
+            output_path=marp_output_path,
+            title=title,
+            include_summaries=include_summaries,
+            include_content=include_content,
+            max_depth=max_depth,
+        )
+
 
 # Usage example
 if __name__ == "__main__":
@@ -172,7 +207,7 @@ if __name__ == "__main__":
         print(f"{key}: {value}")
     
     # Save structure to JSON
-    json_output = "book_with_summaries.json"
+    json_output = os.path.join("output", "book_with_summaries.json")
     mediator.save_to_json(structure, json_output)
     
     # Export to Marp presentation
@@ -190,42 +225,13 @@ if __name__ == "__main__":
     )
     
     # Export full presentation
-    marp_output = "book_presentation.md"
-    mediator.marp_exporter.export_to_marp(
-        structure=structure,
-        output_path=marp_output,
+    marp_output = os.path.join("output", "book_presentation.md")
+    mediator.generate_marp_from_json(
+        json_path=json_output,
+        marp_output_path=marp_output,
         title="Book Summary Presentation",
         include_summaries=True,
-        include_content=False,  # Set to True to include full content
-        max_depth=3
+        include_content=False,
+        max_depth=3,
     )
     
-    # Example 2: Export single chapter
-    print("\n" + "="*80)
-    print("EXPORTING SINGLE CHAPTER")
-    print("="*80)
-    
-    if structure:
-        first_chapter = list(structure.keys())[0]
-        chapter_output = f"chapter_{first_chapter.replace(' ', '_')}.md"
-        
-        mediator.marp_exporter.export_chapter(
-            chapter_title=first_chapter,
-            chapter_data=structure[first_chapter],
-            output_path=chapter_output,
-            include_summaries=True,
-            include_content=False
-        )
-    
-    # Summary
-    print("\n" + "="*80)
-    print("✅ WORKFLOW COMPLETE!")
-    print("="*80)
-    print(f"📄 JSON export: {json_output}")
-    print(f"📊 Marp presentation: {marp_output}")
-    if structure:
-        print(f"📖 Chapter presentation: {chapter_output}")
-    print("\n💡 Next steps:")
-    print("  1. Open .md files in VSCode with Marp extension")
-    print("  2. Preview with Marp: Markdown Preview")
-    print("  3. Export to PDF/PPTX from VSCode")
