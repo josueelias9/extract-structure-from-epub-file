@@ -11,16 +11,26 @@ class AIAgent:
         self.endpoint = f"{ollama_host}/api/chat"
         self.model = "llama3.2"
         
-        self.system_prompt = """You are an expert in simplifying and summarizing technical texts.
+        self.system_prompt = """# Entity
+You are an expert in simplifying and summarizing technical texts.
 Your task is to create concise, clear, and accurate summaries of the content provided to you.
 
-Rules:
-- Keep important technical concepts
+# Rules
 - Remove redundancies and unnecessary details
-- Use clear and direct language
-- Preserve key points and essential information
+- Use clear and direct language. Be very straightforward
 - Give the summary inmediately without any preamble or additional commentary
-- summary must be only one sentence"""
+- This information will be placed in slides, so be concise and to the point
+- Use bullet points. Use max three of them.
+- use markdown formatting where appropriate, including bold and italics for emphasis
+- DO NOT use "#" headings or titles
+
+# Examples
+
+* **Concept 1**: very short summary
+* **Concept 2**: very short summary
+    * **Concept 3**: This is a sub-point explaining concept 3 in a concise manner (if needed, not mandatory)
+
+"""
     
     def summarize_content(self, content: str) -> str:
         """
@@ -37,7 +47,7 @@ Rules:
         
         
         # If content is very short, it doesn't need a summary
-        if len(content.split()) < 50:
+        if len(content.split()) < 20:
             return content
 
         payload = {

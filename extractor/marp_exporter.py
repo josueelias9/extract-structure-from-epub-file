@@ -177,6 +177,37 @@ style: |
         
         return '\n'.join(toc_lines)
     
+    def _should_skip_title(self, title: str) -> bool:
+        """
+        Check if a title should be skipped based on exclusion criteria
+        
+        Args:
+            title: The section title to check
+            
+        Returns:
+            True if the title should be skipped, False otherwise
+        """
+        # Clean the title for comparison
+        clean_title = title.strip()
+        
+        # Skip specific titles
+        excluded_titles = {
+            "Assessment Test",
+            "Review Questions", 
+            "Table of Contents",
+            "Answers to Assessment Test"
+        }
+        
+        # Check if title matches excluded titles
+        if clean_title in excluded_titles:
+            return True
+        
+        # Check if title is a single uppercase letter (A, B, C, etc.)
+        if len(clean_title) == 1 and clean_title.isupper() and clean_title.isalpha():
+            return True
+        
+        return False
+    
     def _process_structure_recursive(
         self,
         structure: Dict[str, Any],
@@ -203,6 +234,10 @@ style: |
             return
         
         for idx, (title, info) in enumerate(structure.items(), 1):
+            # Skip excluded titles
+            if self._should_skip_title(title):
+                continue
+            
             # Generate section number
             section_number = f"{parent_number}{idx}." if parent_number else f"{idx}."
             

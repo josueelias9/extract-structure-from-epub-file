@@ -190,7 +190,7 @@ if __name__ == "__main__":
     
     # # Process EPUB with summaries
     epub_path = "my_book.epub"
-    # structure = mediator.process_epub(epub_path, generate_summaries=True)
+    structure = mediator.process_epub(epub_path, generate_summaries=True)
     
     # # Display structure with summaries
     # print("\n" + "="*80)
@@ -208,7 +208,7 @@ if __name__ == "__main__":
     
     # Save structure to JSON
     json_output = os.path.join("output", "book_with_summaries.json")
-    # mediator.save_to_json(structure, json_output)
+    mediator.save_to_json(structure, json_output)
     
     # Export to Marp presentation
     print("\n" + "="*80)
