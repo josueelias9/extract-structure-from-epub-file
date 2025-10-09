@@ -181,48 +181,39 @@ class Mediator:
 # Usage example
 if __name__ == "__main__":
     # Example 1: Full workflow with Marp export
-    print("="*80)
-    print("FULL WORKFLOW: EPUB → SUMMARIES → MARP PRESENTATION")
-    print("="*80)
+    # print("="*80)
+    # print("FULL WORKFLOW: EPUB → SUMMARIES → MARP PRESENTATION")
+    # print("="*80)
     
-    # Create mediator with Markdown format (recommended for Marp)
+    # # Create mediator with Markdown format (recommended for Marp)
     mediator = Mediator(ollama_host="http://ollama:11434", output_format="markdown")
     
-    # Process EPUB with summaries
+    # # Process EPUB with summaries
     epub_path = "my_book.epub"
-    structure = mediator.process_epub(epub_path, generate_summaries=True)
+    # structure = mediator.process_epub(epub_path, generate_summaries=True)
     
-    # Display structure with summaries
-    print("\n" + "="*80)
-    print("BOOK STRUCTURE WITH SUMMARIES")
-    print("="*80 + "\n")
-    mediator.print_structure(structure, show_summaries=True)
+    # # Display structure with summaries
+    # print("\n" + "="*80)
+    # print("BOOK STRUCTURE WITH SUMMARIES")
+    # print("="*80 + "\n")
+    # mediator.print_structure(structure, show_summaries=True)
     
-    # Show statistics
-    print("\n" + "="*80)
-    print("STATISTICS")
-    print("="*80)
-    stats = mediator.get_statistics(structure)
-    for key, value in stats.items():
-        print(f"{key}: {value}")
+    # # Show statistics
+    # print("\n" + "="*80)
+    # print("STATISTICS")
+    # print("="*80)
+    # stats = mediator.get_statistics(structure)
+    # for key, value in stats.items():
+    #     print(f"{key}: {value}")
     
     # Save structure to JSON
     json_output = os.path.join("output", "book_with_summaries.json")
-    mediator.save_to_json(structure, json_output)
+    # mediator.save_to_json(structure, json_output)
     
     # Export to Marp presentation
     print("\n" + "="*80)
     print("EXPORTING TO MARP PRESENTATION")
     print("="*80)
-    
-    # Configure Marp exporter
-    mediator.marp_exporter = MarpExporter(
-        theme="default",
-        paginate=True,
-        footer="Generated from EPUB",
-        background_color="#fff",
-        color="#333"
-    )
     
     # Export full presentation
     marp_output = os.path.join("output", "book_presentation.md")

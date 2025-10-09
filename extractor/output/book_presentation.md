@@ -2,9 +2,20 @@
 marp: true
 theme: default
 paginate: true
-footer: 'Generated from EPUB'
-backgroundColor: #fff
-color: #333
+footer: 'Eng. Josué Huamán'
+style: |
+  section {
+    background-image: url('https://upload.wikimedia.org/wikipedia/commons/5/51/Google_Cloud_logo.svg');
+    background-size: 250px;
+    background-position: 95% 90%; /* esquina inferior derecha */
+    background-repeat: no-repeat;
+    opacity: 1;
+  }
+
+---
+
+![bg](https://upload.wikimedia.org/wikipedia/commons/5/51/Google_Cloud_logo.svg)
+
 ---
 <!-- _class: lead -->
 <!-- _paginate: false -->
