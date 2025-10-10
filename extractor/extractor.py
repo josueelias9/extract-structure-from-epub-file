@@ -1,6 +1,7 @@
 from ebooklib import epub, ITEM_DOCUMENT
 from bs4 import BeautifulSoup
 from typing import Dict, Any
+import html2text
 
 
 class EPUBExtractor:
@@ -87,20 +88,51 @@ class EPUBExtractor:
     
     def _parse_html_to_text(self, html_content: str) -> str:
         """
-        Parse HTML content to clean text
+        Parse HTML content to Markdown format
         
         Args:
             html_content: HTML string
             
         Returns:
-            str: Clean text without HTML tags
+            str: Markdown formatted text preserving structure
         """
         if not html_content or not html_content.strip():
             return ""
         
-        soup = BeautifulSoup(html_content, 'lxml')
-        text = soup.get_text(separator=' ', strip=True)
-        return text
+        # Create html2text converter
+        h = html2text.HTML2Text()
+        
+        # Configure converter for better Markdown output
+        h.ignore_links = True  # Keep links
+        h.ignore_images = True  # Keep images
+        h.ignore_emphasis = False  # Keep bold/italic
+        h.body_width = 0  # Don't wrap lines
+        h.unicode_snob = True  # Use Unicode characters
+        h.skip_internal_links = False  # Keep internal links
+        h.inline_links = True  # Put links inline
+        h.protect_links = True  # Don't break links
+        h.mark_code = True  # Mark code blocks
+        
+        # Convert HTML to Markdown
+        markdown_text = h.handle(html_content)
+        
+        # Clean up extra whitespace while preserving intentional line breaks
+        lines = markdown_text.split('\n')
+        cleaned_lines = []
+        
+        for line in lines:
+            # Strip trailing whitespace but preserve the line
+            cleaned_line = line.rstrip()
+            cleaned_lines.append(cleaned_line)
+        
+        # Join lines and remove excessive blank lines (more than 2 consecutive)
+        result = '\n'.join(cleaned_lines)
+        
+        # Replace 3+ consecutive newlines with just 2
+        import re
+        result = re.sub(r'\n{3,}', '\n\n', result)
+        
+        return result.strip()
     
     def print_structure(self, structure: Dict[str, Any], indent: int = 0) -> None:
         """
