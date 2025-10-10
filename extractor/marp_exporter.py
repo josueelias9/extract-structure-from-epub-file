@@ -234,6 +234,11 @@ style: |
             return
         
         for idx, (title, info) in enumerate(structure.items(), 1):
+
+
+            if "Translating Business Use Case" in title:
+                print("Found it!")
+
             # Skip excluded titles
             if self._should_skip_title(title):
                 continue
@@ -246,7 +251,7 @@ style: |
             
             # Add summary slide if available
             if include_summaries and info.get("summary"):
-                slides.append(self._generate_summary_slide(title, info["summary"], section_number))
+                slides.append(self._generate_summary_slide(info["summary"]))
             
             # Add content slide if requested
             if include_content and info.get("content"):
@@ -286,10 +291,10 @@ style: |
 
 """
     
-    def _generate_summary_slide(self, title: str, summary: str, section_number: str) -> str:
+    def _generate_summary_slide(self, summary: str) -> str:
         """Generate a summary slide"""
         # Split summary into chunks if too long
-        max_chars = 800
+        max_chars = 700
         
         if len(summary) <= max_chars:
             return f"""{summary}
@@ -298,27 +303,31 @@ style: |
 
 """
         else:
-            # Split into multiple slides
-            words = summary.split()
+            # Split into multiple slides by lines to preserve formatting
+            lines = summary.split('\n')
             chunks = []
-            current_chunk = []
+            current_chunk_lines = []
             current_length = 0
             
-            for word in words:
-                if current_length + len(word) + 1 > max_chars:
-                    chunks.append(' '.join(current_chunk))
-                    current_chunk = [word]
-                    current_length = len(word)
+            for line in lines:
+                line_length = len(line) + 1  # +1 for the newline character
+                
+                # If adding this line would exceed max_chars, start a new chunk
+                if current_length + line_length > max_chars and current_chunk_lines:
+                    chunks.append('\n'.join(current_chunk_lines))
+                    current_chunk_lines = [line]
+                    current_length = line_length
                 else:
-                    current_chunk.append(word)
-                    current_length += len(word) + 1
+                    current_chunk_lines.append(line)
+                    current_length += line_length
             
-            if current_chunk:
-                chunks.append(' '.join(current_chunk))
+            # Add remaining lines as the last chunk
+            if current_chunk_lines:
+                chunks.append('\n'.join(current_chunk_lines))
             
+            # Generate slides from chunks
             slides = []
             for i, chunk in enumerate(chunks, 1):
-                part_label = f" (Part {i}/{len(chunks)})" if len(chunks) > 1 else ""
                 slides.append(f"""{chunk}
 
 ---

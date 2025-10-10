@@ -23,6 +23,8 @@ Your task is to create concise, clear, and accurate summaries of the content pro
 - Use bullet points. Use max three of them.
 - use markdown formatting where appropriate, including bold and italics for emphasis
 - DO NOT use "#" headings or titles
+- in a bullet point, the distance between the asterisk and the text must be exactly one space
+- do not use "-" because it will be confused with slide breaks
 
 # Examples
 
