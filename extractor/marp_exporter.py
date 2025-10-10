@@ -9,55 +9,7 @@ class MarpExporter:
     def __init__(self):
         """Initialize Marp exporter with static configuration"""
         pass
-    
-    def export_to_marp(
-        self,
-        structure: Dict[str, Any],
-        output_path: str,
-        title: str = "Book Presentation",
-        include_summaries: bool = True,
-        include_content: bool = False,
-        max_depth: int = 3
-    ) -> None:
-        """
-        Export book structure to Marp presentation
-        
-        Args:
-            structure: Book structure dictionary
-            output_path: Path to save the Marp markdown file
-            title: Presentation title
-            include_summaries: Include summary slides
-            include_content: Include full content (can make presentation very long)
-            max_depth: Maximum heading depth to include
-        """
-        slides = []
-        
-        # Add front matter (Marp configuration)
-        slides.append(self._generate_front_matter())
-        
-        # Add title slide
-        slides.append(self._generate_title_slide(title))
-        
-        # Add table of contents
-        slides.append(self._generate_toc(structure))
-        
-        # Generate slides from structure
-        self._process_structure_recursive(
-            structure,
-            slides,
-            level=1,
-            include_summaries=include_summaries,
-            include_content=include_content,
-            max_depth=max_depth
-        )
-        
-        # Write to file
-        with open(output_path, 'w', encoding='utf-8') as f:
-            f.write('\n\n---\n\n'.join(slides))
-        
-        print(f"✓ Marp presentation exported to: {output_path}")
-        print(f"  Total slides: {len(slides)}")
-        print(f"\n💡 To preview: Open {output_path} in VSCode with Marp extension")
+
 
     def export_from_json(
         self,
@@ -101,9 +53,8 @@ class MarpExporter:
         # Build slides (without writing yet)
         slides: list[str] = []
 
-        # Title slide and TOC
+        # Title slide
         slides.append(self._generate_title_slide(title))
-        slides.append(self._generate_toc(structure))
 
         # Generate slides from structure
         self._process_structure_recursive(
@@ -162,20 +113,7 @@ style: |
 
 ---"""
     
-    def _generate_toc(self, structure: Dict[str, Any]) -> str:
-        """Generate table of contents slide"""
-        toc_lines = [
-            "<!-- _class: lead -->",
-            "",
-            "## 📚 Table of Contents",
-            ""
-        ]
-        
-        for i, (title, info) in enumerate(structure.items(), 1):
-            subsection_count = len(info.get("subsections", {}))
-            toc_lines.append(f"{i}. **{title}** ({subsection_count} sections)")
-        
-        return '\n'.join(toc_lines)
+
     
     def _should_skip_title(self, title: str) -> bool:
         """
@@ -190,20 +128,24 @@ style: |
         # Clean the title for comparison
         clean_title = title.strip()
         
-        # Skip specific titles
+        # Skip titles containing specific keywords/phrases
         excluded_titles = {
             "Assessment Test",
             "Review Questions", 
             "Table of Contents",
-            "Answers to Assessment Test"
+            "Answers to Assessment Test",
+            "Index",
+            "About the Author",
+            "Acknowledgments",
+            "About the Technical Editors",
+            "Introduction",
+            "Book Summary Presentation",
+            "AppendixAnswers to Review Questions"
         }
         
-        # Check if title matches excluded titles
+        # Check if title contains any of the excluded keywords
+                # Check if title matches excluded titles
         if clean_title in excluded_titles:
-            return True
-        
-        # Check if title is a single uppercase letter (A, B, C, etc.)
-        if len(clean_title) == 1 and clean_title.isupper() and clean_title.isalpha():
             return True
         
         return False
@@ -348,76 +290,3 @@ style: |
 {content}
 
 """
-    
-    def export_chapter(
-        self,
-        chapter_title: str,
-        chapter_data: Dict[str, Any],
-        output_path: str,
-        include_summaries: bool = True,
-        include_content: bool = False
-    ) -> None:
-        """
-        Export a single chapter to Marp presentation
-        
-        Args:
-            chapter_title: Chapter title
-            chapter_data: Chapter data dictionary
-            output_path: Output file path
-            include_summaries: Include summaries
-            include_content: Include content
-        """
-        # Create a temporary structure with just this chapter
-        temp_structure = {chapter_title: chapter_data}
-        
-        self.export_to_marp(
-            temp_structure,
-            output_path,
-            title=chapter_title,
-            include_summaries=include_summaries,
-            include_content=include_content
-        )
-
-
-# Usage example
-if __name__ == "__main__":
-    # Example structure (normally comes from mediator)
-    example_structure = {
-        "Chapter 1: Introduction": {
-            "content": "This is the introduction content with detailed explanations...",
-            "summary": "Introduction to the main concepts and overview of what will be covered.",
-            "subsections": {
-                "Section 1.1: Getting Started": {
-                    "content": "Getting started content...",
-                    "summary": "Basic setup and initial configuration steps.",
-                    "subsections": {}
-                },
-                "Section 1.2: Prerequisites": {
-                    "content": "Prerequisites content...",
-                    "summary": "Required knowledge and tools before starting.",
-                    "subsections": {}
-                }
-            }
-        },
-        "Chapter 2: Main Content": {
-            "content": "Main content here...",
-            "summary": "Core concepts and detailed explanations of the main topics.",
-            "subsections": {}
-        }
-    }
-    
-    # Create exporter
-    exporter = MarpExporter()
-    
-    # Export full presentation
-    exporter.export_to_marp(
-        structure=example_structure,
-        output_path="presentation.md",
-        title="My Book Presentation",
-        include_summaries=True,
-        include_content=False,  # Set to True to include full content
-        max_depth=3
-    )
-    
-    print("\n✓ Done! Open presentation.md in VSCode with Marp extension")
-    print("  You can also export to PDF/PPTX from VSCode")
