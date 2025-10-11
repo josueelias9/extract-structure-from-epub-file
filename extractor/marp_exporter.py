@@ -178,9 +178,6 @@ style: |
         for idx, (title, info) in enumerate(structure.items(), 1):
 
 
-            if "Translating Business Use Case" in title:
-                print("Found it!")
-
             # Skip excluded titles
             if self._should_skip_title(title):
                 continue

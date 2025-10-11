@@ -21,6 +21,9 @@ xmltodict>=0.13.0
 # HTTP client for Ollama integration
 httpx>=0.25.0
 
+# HTML to Markdown conversion
+html2text>=2020.1.16
+
 # Optional: for better text processing
 python-magic>=0.4.27
 
