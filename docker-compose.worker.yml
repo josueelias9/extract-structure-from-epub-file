@@ -1,12 +1,11 @@
 services:
-  extractor:
+  worker:
     volumes:
       # Mount the root folder that contains .git
       - .:/workspace
-      - ./src:/workspace/extractor/src
+      - ./src:/workspace/worker/src
     command: sleep infinity
     depends_on: !reset []
     ports:
-      - "8000:8000"
+      - "8001:8000"
 
-    

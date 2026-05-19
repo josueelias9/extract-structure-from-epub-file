@@ -1,0 +1,27 @@
+{
+  "name": "Worker Container",
+  "dockerComposeFile": ["../../docker-compose.yml","../../docker-compose.worker.yml"],
+  "service": "worker",
+  "shutdownAction": "none",
+  "workspaceFolder": "/workspace/worker",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-python.python",
+        "tomoki1207.pdf",
+        "humao.rest-client",
+        "Gruntfuggly.todo-tree"
+      ],
+      "settings": {
+        "workbench.colorTheme": "Solarized Dark"
+      }
+    }
+  },
+  "features": {
+    "ghcr.io/devcontainers/features/git:1": {},
+    "ghcr.io/devcontainers-extra/features/curl-apt-get:1": {}
+  },
+  "runServices": ["worker","ollama","ollama-init","db","extractor-init"],
+  "forwardPorts": [8001]
+
+}
