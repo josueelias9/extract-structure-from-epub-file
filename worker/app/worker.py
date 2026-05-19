@@ -20,32 +20,22 @@ def process_summary_job(payload: dict) -> None:
         raise ValueError("Invalid message payload: missing job_id")
 
     with Session(engine) as session:
-        jobs = SummaryJobRepository(session)
-        jobs.mark_processing(job_id)
-        job = jobs.get_job(job_id)
-        if job is None:
-            raise ValueError(f"Summary job {job_id!r} not found")
-
-        chapter_ids = jobs.parse_chapter_ids(job)
 
         use_case = SummarizeEpubUseCase(
             ai_agent=AIAgent(),
             repository=PostgresBookRepository(session),
+            summary_job_repository=SummaryJobRepository(session),
         )
 
         try:
-            response = use_case.execute(
-                SummarizeEpubRequest(book_id=job.book_id, chapter_ids=chapter_ids)
-            )
-            jobs.mark_completed(job_id, response.chapters_summarized)
+            response = use_case.execute(SummarizeEpubRequest(job_id=job_id))
             logger.info(
                 "Completed summary job %s for book %s (%d chapters)",
                 job_id,
-                job.book_id,
+                response.book_id,
                 response.chapters_summarized,
             )
         except Exception as e:
-            jobs.mark_failed(job_id, str(e))
             logger.exception("Summary job %s failed", job_id)
             raise
 

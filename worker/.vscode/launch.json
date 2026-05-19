@@ -1,0 +1,41 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Worker: Smoke Test (fake AI)",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/scripts/worker_smoke_test.py",
+            "cwd": "${workspaceFolder}",
+            "console": "integratedTerminal",
+            "env": {
+                "PYTHONPATH": "${workspaceFolder}"
+            }
+        },
+        {
+            "name": "🟢 Worker: Smoke Test (real AI)",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/scripts/worker_smoke_test.py",
+            "args": [
+                "--use-real-ai"
+            ],
+            "cwd": "${workspaceFolder}",
+            "console": "integratedTerminal",
+            "env": {
+                "PYTHONPATH": "${workspaceFolder}"
+            }
+        },
+        {
+            "name": "Worker: Run Queue Consumer",
+            "type": "python",
+            "request": "launch",
+            "module": "app.worker",
+            "cwd": "${workspaceFolder}",
+            "console": "integratedTerminal",
+            "env": {
+                "PYTHONPATH": "${workspaceFolder}"
+            }
+        }
+    ]
+}
