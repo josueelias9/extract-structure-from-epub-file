@@ -50,6 +50,10 @@ class SummaryJobRepository:
         self._session.refresh(job)
         return job
 
+    def begin_job(self, job_id: str) -> tuple[str, Optional[list[str]]]:
+        job = self.mark_processing(job_id)
+        return job.book_id, self.parse_chapter_ids(job)
+
     def mark_completed(self, job_id: str, chapters_summarized: int) -> SummaryJobORM:
         job = self._require(job_id)
         job.status = "completed"

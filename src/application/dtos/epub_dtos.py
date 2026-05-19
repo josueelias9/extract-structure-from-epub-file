@@ -38,8 +38,15 @@ class ExtractEpubResponse:
 
 
 @dataclass
-class SummarizeEpubRequest:
+class EnqueueSummaryJobRequest:
     book_id: str
+    chapter_ids: Optional[List[str]] = None  # None → all included chapters
+
+
+@dataclass
+class SummarizeEpubRequest:
+    book_id: Optional[str] = None
+    job_id: Optional[str] = None
     chapter_ids: Optional[List[str]] = None  # None → all included chapters
 
 

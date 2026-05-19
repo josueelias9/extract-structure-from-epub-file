@@ -13,6 +13,7 @@ from src.application.ports.service_ports import (
     EpubExtractorPort,
     EpubSourcePort,
     MarpExporterPort,
+    SummaryJobRepositoryPort,
 )
 from src.application.dtos.epub_dtos import (
     ChapterDTO,
@@ -100,47 +101,73 @@ class ExtractEpubUseCase:
 
 
 class SummarizeEpubUseCase:
-    """Generate AI summaries for included chapters and persist them."""
+    """Generate AI summaries for included chapters and persist them.
+    If a job_id is provided, the summarisation will be tracked in the SummaryJobRepository.
+"""
 
-    def __init__(self, ai_agent: AIServicePort, repository: BookRepositoryPort):
+    def __init__(
+        self,
+        ai_agent: AIServicePort,
+        repository: BookRepositoryPort,
+        summary_job_repository: SummaryJobRepositoryPort,
+    ):
         self._ai_agent = ai_agent
         self._repository = repository
+        self._summary_job_repository = summary_job_repository
 
     def execute(self, request: SummarizeEpubRequest) -> SummarizeEpubResponse:
-        logger.info("Starting summarisation for book %r", request.book_id)
+        job_id = request.job_id
+        book_id = request.book_id
+        chapter_ids = request.chapter_ids
 
-        if request.chapter_ids:
-            # Summarise a specific subset — still honour the include flag
-            chapters = [
-                ch
-                for cid in request.chapter_ids
-                if (ch := self._repository.get_chapter(cid)) is not None and ch.include
-            ]
-        else:
-            # Summarise all chapters that are flagged for inclusion
-            chapters = self._repository.get_chapters(request.book_id, include_only=True)
+        if job_id:
+            book_id, chapter_ids = self._summary_job_repository.begin_job(job_id)
 
-        count = 0
-        for chapter in chapters:
-            if not chapter.content:
-                logger.info("Skipping chapter %r (no content)", chapter.id)
-                continue
-            logger.info("Summarising chapter %r — %s", chapter.id, chapter.title)
-            try:
-                summary = self._ai_agent.summarize_content(chapter.content)
-            except Exception as e:
-                logger.error("Failed to summarise chapter %r: %s", chapter.id, e)
-                continue
-            self._repository.update_chapter_summary(
-                chapter_id=chapter.id,
-                summary=summary,
-                summary_date=datetime.utcnow(),
-                ai_generated=True,
-            )
-            count += 1
+        if not book_id:
+            raise ValueError("book_id is required when job_id is not provided")
 
-        logger.info("Summarisation complete — %d chapters processed", count)
-        return SummarizeEpubResponse(book_id=request.book_id, chapters_summarized=count)
+        logger.info("Starting summarisation for book %r", book_id)
+
+        try:
+            if chapter_ids:
+                # Summarise a specific subset — still honour the include flag
+                chapters = [
+                    ch
+                    for cid in chapter_ids
+                    if (ch := self._repository.get_chapter(cid)) is not None and ch.include
+                ]
+            else:
+                # Summarise all chapters that are flagged for inclusion
+                chapters = self._repository.get_chapters(book_id, include_only=True)
+
+            count = 0
+            for chapter in chapters:
+                if not chapter.content:
+                    logger.info("Skipping chapter %r (no content)", chapter.id)
+                    continue
+                logger.info("Summarising chapter %r — %s", chapter.id, chapter.title)
+                try:
+                    summary = self._ai_agent.summarize_content(chapter.content)
+                except Exception as e:
+                    logger.error("Failed to summarise chapter %r: %s", chapter.id, e)
+                    continue
+                self._repository.update_chapter_summary(
+                    chapter_id=chapter.id,
+                    summary=summary,
+                    summary_date=datetime.utcnow(),
+                    ai_generated=True,
+                )
+                count += 1
+
+            if job_id:
+                self._summary_job_repository.mark_completed(job_id, count)
+
+            logger.info("Summarisation complete — %d chapters processed", count)
+            return SummarizeEpubResponse(book_id=book_id, chapters_summarized=count)
+        except Exception as e:
+            if job_id:
+                self._summary_job_repository.mark_failed(job_id, str(e))
+            raise
 
 
 # ---------------------------------------------------------------------------

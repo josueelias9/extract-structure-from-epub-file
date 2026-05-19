@@ -65,6 +65,21 @@ class BookRepositoryPort(ABC):
         ...
 
 
+class SummaryJobRepositoryPort(ABC):
+    """Persistence port for async summarisation jobs."""
+
+    @abstractmethod
+    def begin_job(self, job_id: str) -> tuple[str, Optional[List[str]]]:
+        """Mark a job as processing and return (book_id, chapter_ids)."""
+        ...
+
+    @abstractmethod
+    def mark_completed(self, job_id: str, chapters_summarized: int): ...
+
+    @abstractmethod
+    def mark_failed(self, job_id: str, error_message: str): ...
+
+
 # ---------------------------------------------------------------------------
 # EPUB extractor
 # ---------------------------------------------------------------------------

@@ -2,6 +2,7 @@ import json
 from src.infrastructure.repositories.postgres_repository import PostgresBookRepository
 from src.infrastructure.repositories.summary_job_repository import SummaryJobRepository
 from src.infrastructure.queue.rabbitmq import RabbitMQQueue
+from src.application.dtos.epub_dtos import EnqueueSummaryJobRequest
 
 class EnqueueSummaryJobUseCase:
     def __init__(self, repository, job_repository, queue):
@@ -9,9 +10,9 @@ class EnqueueSummaryJobUseCase:
         self.job_repository = job_repository
         self.queue = queue
 
-    def execute(self, body):
-        book_id = body.get("book_id")
-        chapter_ids = body.get("chapter_ids")
+    def execute(self, dto: EnqueueSummaryJobRequest):
+        book_id = dto.book_id
+        chapter_ids = dto.chapter_ids
         if self.repository.get_book(book_id) is None:
             raise Exception(f"Book {book_id!r} not found.")
         if chapter_ids:
