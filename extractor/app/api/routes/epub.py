@@ -17,8 +17,10 @@ import os
 from fastapi import APIRouter, HTTPException, UploadFile, File, Form
 from typing import Optional
 
+from src.application.use_cases.queue_use_cases import CheckLLMConnectionUseCase
+
+
 from src.application.use_cases.epub_use_cases import (
-    CheckLLMConnectionUseCase,
     DeleteBookUseCase,
     ExtractEpubUseCase,
     GenerateMarpUseCase,
@@ -42,8 +44,6 @@ from src.infrastructure.epub.sources.local_source import LocalFileSource
 from src.infrastructure.epub.sources.upload_source import UploadedFileSource
 from src.infrastructure.export.marp_exporter import MarpExporter
 from src.infrastructure.repositories.postgres_repository import PostgresBookRepository
-from src.infrastructure.repositories.summary_job_repository import SummaryJobRepository
-from src.infrastructure.queue.rabbitmq import RabbitMQQueue
 from src.infrastructure.database.models import (
     BooksListResponse,
     ChaptersListResponse,
@@ -56,8 +56,6 @@ from src.infrastructure.database.models import (
     SetInclusionRequest,
     SetInclusionResponse,
     SlidesResponse,
-    SummarizeRequest,
-    SummarizeResponse,
     UploadEpubResponse,
 )
 

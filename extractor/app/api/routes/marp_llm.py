@@ -6,7 +6,6 @@ import logging
 from fastapi import APIRouter, HTTPException
 from app.api.deps import SessionDep
 from src.application.use_cases.epub_use_cases import (
-    CheckLLMConnectionUseCase,
     GenerateMarpUseCase,
 )
 from src.application.dtos.epub_dtos import GenerateMarpRequest
@@ -46,13 +45,3 @@ async def generate_marp(
         raise HTTPException(status_code=500, detail=str(e))
     return {"marp_output": response.marp_output_path}
 
-@router.get("/llm/status", response_model=LLMStatusResponse)
-async def llm_status():
-    """Check whether the Ollama LLM service is reachable."""
-    use_case = CheckLLMConnectionUseCase(ai_agent=AIAgent())
-    response = use_case.execute()
-    return {
-        "connected": response.connected,
-        "host": response.host,
-        "model": response.model,
-    }

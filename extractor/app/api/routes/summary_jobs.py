@@ -3,8 +3,8 @@ from app.api.deps import SessionDep
 from src.infrastructure.repositories.summary_job_repository import SummaryJobRepository
 from src.infrastructure.queue.rabbitmq import RabbitMQQueue
 from src.infrastructure.repositories.postgres_repository import PostgresBookRepository
-from src.application.use_cases.summary_job_use_cases import EnqueueSummaryJobUseCase, GetSummaryJobStatusUseCase, GetLatestSummaryJobUseCase
-from src.application.dtos.epub_dtos import EnqueueSummaryJobRequest
+from src.application.use_cases.queue_use_cases import EnqueueSummaryJobUseCase, GetSummaryJobStatusUseCase, GetLatestSummaryJobUseCase
+from src.application.dtos.queue_dtos import EnqueueSummaryJobRequest
 
 router = APIRouter(prefix="/epub/summarize", tags=["summary-jobs"])
 
