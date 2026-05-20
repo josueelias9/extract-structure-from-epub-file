@@ -2,8 +2,13 @@
 
 import { AuthError } from 'next-auth'
 import { signIn, signOut } from '@/auth'
+import type { SummaryJobStatus } from './api'
 
-const API_URL = `${process.env.NEXT_PRIVATE_API_URL ?? 'http://localhost:8000'}/api/v1`
+export async function signOutAction() {
+    await signOut({ redirectTo: '/' })
+}
+
+const API_URL = `${process.env.NEXT_PRIVATE_API_URL}/api/v1`
 
 async function handleResponse<T>(res: Response): Promise<T> {
     if (!res.ok) {
@@ -34,6 +39,7 @@ export type UploadState = {
     book_name?: string
 }
 
+// TODO: epub/upload is repeated
 export async function uploadEpubAction(
     _prevState: UploadState | null,
     formData: FormData
@@ -67,6 +73,14 @@ export async function summarizeBook(
     bookId: string
 ): Promise<{ book_id: string; chapters_summarized: number }> {
     return fetch(`${API_URL}/epub/summarize`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ book_id: bookId })
+    }).then(r => handleResponse(r))
+}
+
+export async function enqueueSummary(bookId: string): Promise<SummaryJobStatus> {
+    return fetch(`${API_URL}/epub/summarize/queue`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ book_id: bookId })
@@ -112,7 +126,10 @@ export async function toggleAllChaptersAction(
         }).then(r => handleResponse(r))
         return { status: 'done', error: null }
     } catch (err: unknown) {
-        return { status: 'error', error: err instanceof Error ? err.message : 'Failed to update chapters' }
+        return {
+            status: 'error',
+            error: err instanceof Error ? err.message : 'Failed to update chapters'
+        }
     }
 }
 

@@ -17,8 +17,10 @@ import os
 from fastapi import APIRouter, HTTPException, UploadFile, File, Form
 from typing import Optional
 
+from src.application.use_cases.queue_use_cases import CheckLLMConnectionUseCase
+
+
 from src.application.use_cases.epub_use_cases import (
-    CheckLLMConnectionUseCase,
     DeleteBookUseCase,
     ExtractEpubUseCase,
     GenerateMarpUseCase,
@@ -26,7 +28,6 @@ from src.application.use_cases.epub_use_cases import (
     ListBooksUseCase,
     ListChaptersUseCase,
     SetExcludedSectionsUseCase,
-    SummarizeEpubUseCase,
 )
 from src.application.dtos.epub_dtos import (
     DeleteBookRequest,
@@ -35,7 +36,6 @@ from src.application.dtos.epub_dtos import (
     GetSlidesRequest,
     ListChaptersRequest,
     SetExcludedSectionsRequest,
-    SummarizeEpubRequest,
 )
 from app.api.deps import SessionDep
 from src.infrastructure.ai.ollama_agent import AIAgent
@@ -44,7 +44,7 @@ from src.infrastructure.epub.sources.local_source import LocalFileSource
 from src.infrastructure.epub.sources.upload_source import UploadedFileSource
 from src.infrastructure.export.marp_exporter import MarpExporter
 from src.infrastructure.repositories.postgres_repository import PostgresBookRepository
-from app.api.schemas.schemas import (
+from src.infrastructure.database.models import (
     BooksListResponse,
     ChaptersListResponse,
     DeleteBookResponse,
@@ -56,8 +56,6 @@ from app.api.schemas.schemas import (
     SetInclusionRequest,
     SetInclusionResponse,
     SlidesResponse,
-    SummarizeRequest,
-    SummarizeResponse,
     UploadEpubResponse,
 )
 
@@ -192,33 +190,6 @@ async def extract_epub(
         "book_id": response.book_id,
         "total_chapters": response.total_chapters,
         "total_content_chars": response.total_content_chars,
-    }
-
-
-@router.post("/summarize", response_model=SummarizeResponse)
-async def summarize_epub(
-    body: SummarizeRequest,
-    session: SessionDep,
-):
-    """Generate AI summaries for included chapters (requires Ollama).
-
-    Optionally pass ``chapter_ids`` to restrict summarisation to a specific subset.
-    """
-    use_case = SummarizeEpubUseCase(
-        ai_agent=AIAgent(),
-        repository=PostgresBookRepository(session),
-    )
-    try:
-        response = use_case.execute(
-            SummarizeEpubRequest(book_id=body.book_id, chapter_ids=body.chapter_ids)
-        )
-    except ValueError as e:
-        raise HTTPException(status_code=404, detail=str(e))
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
-    return {
-        "book_id": response.book_id,
-        "chapters_summarized": response.chapters_summarized,
     }
 
 

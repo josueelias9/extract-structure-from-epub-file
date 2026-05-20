@@ -1,0 +1,11 @@
+.next
+.vscode
+node_modules
+
+
+README.md
+.prettierignore
+.prettierrc
+.dockerignore
+Dockerfile
+.gitignore

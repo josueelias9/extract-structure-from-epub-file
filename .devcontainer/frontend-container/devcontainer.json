@@ -2,8 +2,10 @@
   "name": "Frontend Container",
   "dockerComposeFile": ["../../docker-compose.yml","../../docker-compose.frontend.yml"],
   "service": "frontend",
+  "overrideCommand": false,
   "shutdownAction": "none",
   "workspaceFolder": "/workspace/frontend",
+  "runServices": ["frontend"],
   "customizations": {
     "vscode": {
       "extensions": [

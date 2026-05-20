@@ -1,17 +1,16 @@
+'use server'
 import bcrypt from 'bcrypt'
 import postgres from 'postgres'
 import { randomUUID } from 'crypto'
 
-const connectionString =
-    process.env.POSTGRES_URL ??
-    `postgresql://${process.env.POSTGRES_USER}:${process.env.POSTGRES_PASSWORD}@${process.env.DB_HOST ?? 'db'}:${process.env.DB_PORT ?? 5432}/${process.env.POSTGRES_DB}`
+const connectionString = `postgresql://${process.env.POSTGRES_USER}:${process.env.POSTGRES_PASSWORD}@${process.env.DB_HOST}:${process.env.DB_PORT}/${process.env.POSTGRES_DB}`
 
 const sql = postgres(connectionString, { ssl: false })
 
 const initialUser = {
     name: 'Admin',
-    email: process.env.SEED_USER_EMAIL ?? 'admin@example.com',
-    password: process.env.SEED_USER_PASSWORD ?? 'password123'
+    email: process.env.SEED_USER_EMAIL ?? 'admin@admin.com',
+    password: process.env.SEED_USER_PASSWORD ?? 'adminadmin'
 }
 
 async function seedUsers() {

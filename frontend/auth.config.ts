@@ -1,6 +1,8 @@
 import type { NextAuthConfig } from 'next-auth'
+import { locales, defaultLocale } from './lib/i18n-config'
 
 export const authConfig = {
+    trustHost: true,
     pages: {
         signIn: '/login'
     },
@@ -11,17 +13,26 @@ export const authConfig = {
     callbacks: {
         authorized({ auth, request: { nextUrl } }) {
             const isLoggedIn = !!auth?.user
-            const isAuthPage = nextUrl.pathname.startsWith('/login')
-            const isSeedRoute = nextUrl.pathname.startsWith('/seed')
+            const pathname = nextUrl.pathname
 
-            if (isSeedRoute) return true
+            // Detect locale from path, fall back to default
+            const firstSegment = pathname.split('/')[1]
+            const locale = (locales as readonly string[]).includes(firstSegment)
+                ? firstSegment
+                : defaultLocale
+
+            const isAuthPage = pathname.includes('/login')
+            const isSeedRoute = pathname.startsWith('/seed')
+            const isPublicHome = pathname === '/' || pathname === `/${locale}`
+
+            if (isSeedRoute || isPublicHome) return true
 
             if (isAuthPage) {
-                if (isLoggedIn) return Response.redirect(new URL('/', nextUrl))
+                if (isLoggedIn) return Response.redirect(new URL(`/${locale}`, nextUrl))
                 return true
             }
 
-            if (!isLoggedIn) return false // NextAuth redirects to /login
+            if (!isLoggedIn) return Response.redirect(new URL(`/${locale}/login`, nextUrl))
             return true
         }
     }
