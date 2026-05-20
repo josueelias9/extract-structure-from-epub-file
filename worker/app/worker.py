@@ -2,8 +2,8 @@ import logging
 
 from sqlmodel import Session
 
-from src.application.dtos.epub_dtos import SummarizeEpubRequest
-from src.application.use_cases.epub_use_cases import SummarizeEpubUseCase
+from src.application.dtos.queue_dtos import SummarizeEpubRequest
+from src.application.use_cases.queue_use_cases import SummarizeEpubUseCase
 from src.infrastructure.ai.ollama_agent import AIAgent
 from src.infrastructure.database.db import engine
 from src.infrastructure.queue.rabbitmq import RabbitMQQueue, wait_for_rabbitmq
