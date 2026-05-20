@@ -3,7 +3,7 @@ import requests
 import json
 from typing import Dict, List
 
-from src.application.ports.service_ports import AIServicePort
+from src.application.ports.queue_ports import AIServicePort
 from src.infrastructure.ai.prompts import SUMMARIZE_SYSTEM_PROMPT
 from app.core.config import settings
 

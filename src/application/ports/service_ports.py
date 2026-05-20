@@ -65,21 +65,6 @@ class BookRepositoryPort(ABC):
         ...
 
 
-class SummaryJobRepositoryPort(ABC):
-    """Persistence port for async summarisation jobs."""
-
-    @abstractmethod
-    def begin_job(self, job_id: str) -> tuple[str, Optional[List[str]]]:
-        """Mark a job as processing and return (book_id, chapter_ids)."""
-        ...
-
-    @abstractmethod
-    def mark_completed(self, job_id: str, chapters_summarized: int): ...
-
-    @abstractmethod
-    def mark_failed(self, job_id: str, error_message: str): ...
-
-
 # ---------------------------------------------------------------------------
 # EPUB extractor
 # ---------------------------------------------------------------------------
@@ -128,26 +113,6 @@ class EpubExtractorPort(ABC):
         images_output_dir: Optional[str] = None,
     ) -> Tuple[Book, List[Chapter]]:
         """Parse the EPUB, generate a UUID for the book, and return Book + Chapter list."""
-        ...
-
-
-# ---------------------------------------------------------------------------
-# AI service
-# ---------------------------------------------------------------------------
-
-
-class AIServicePort(ABC):
-    """Port for AI text summarisation and connectivity checks."""
-
-    @abstractmethod
-    def summarize_content(self, content: str) -> str: ...
-
-    @abstractmethod
-    def test_connection(self) -> bool: ...
-
-    @abstractmethod
-    def get_connection_info(self) -> Dict[str, str]:
-        """Return {'host': ..., 'model': ...} for diagnostics."""
         ...
 
 

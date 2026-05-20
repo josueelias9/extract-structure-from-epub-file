@@ -1,3 +1,4 @@
+# TODO replace with celery
 import json
 import logging
 from typing import Any, Callable
@@ -13,7 +14,11 @@ logger = logging.getLogger(__name__)
 class RabbitMQQueue:
     """Thin RabbitMQ adapter for publishing and consuming summary jobs."""
 
-    def __init__(self, url: str = settings.RABBITMQ_URL, queue_name: str = settings.SUMMARY_QUEUE_NAME):
+    def __init__(
+        self,
+        url: str = settings.RABBITMQ_URL,
+        queue_name: str = settings.SUMMARY_QUEUE_NAME,
+    ):
         self._url = url
         self._queue_name = queue_name
 
@@ -37,7 +42,12 @@ class RabbitMQQueue:
         channel.queue_declare(queue=self._queue_name, durable=True)
         channel.basic_qos(prefetch_count=1)
 
-        def _handler(ch: pika.adapters.blocking_connection.BlockingChannel, method, _properties, body: bytes) -> None:
+        def _handler(
+            ch: pika.adapters.blocking_connection.BlockingChannel,
+            method,
+            _properties,
+            body: bytes,
+        ) -> None:
             try:
                 payload = json.loads(body.decode("utf-8"))
                 on_message(payload)
@@ -57,7 +67,9 @@ def wait_for_rabbitmq(max_attempts: int = 60, delay_seconds: int = 2) -> None:
 
     for attempt in range(1, max_attempts + 1):
         try:
-            connection = pika.BlockingConnection(pika.URLParameters(settings.RABBITMQ_URL))
+            connection = pika.BlockingConnection(
+                pika.URLParameters(settings.RABBITMQ_URL)
+            )
             connection.close()
             logger.info("Connected to RabbitMQ")
             return

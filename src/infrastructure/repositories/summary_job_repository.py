@@ -8,13 +8,16 @@ from sqlmodel import Session, select
 from src.infrastructure.database.models import SummaryJobORM
 
 
+# TODO: create port for this class
 class SummaryJobRepository:
     """Persistence helper for async summarisation job state."""
 
     def __init__(self, session: Session):
         self._session = session
 
-    def create_job(self, book_id: str, chapter_ids: Optional[list[str]], chapters_total: int) -> SummaryJobORM:
+    def create_job(
+        self, book_id: str, chapter_ids: Optional[list[str]], chapters_total: int
+    ) -> SummaryJobORM:
         job = SummaryJobORM(
             id=str(uuid.uuid4()),
             book_id=book_id,

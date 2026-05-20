@@ -5,19 +5,15 @@ Use cases for EPUB extraction, AI summarisation, and Marp generation
 
 import logging
 import os
-from datetime import datetime
 
 from src.application.ports.service_ports import (
-    AIServicePort,
     BookRepositoryPort,
     EpubExtractorPort,
     EpubSourcePort,
     MarpExporterPort,
-    SummaryJobRepositoryPort,
 )
 from src.application.dtos.epub_dtos import (
     ChapterDTO,
-    CheckLLMConnectionResponse,
     DeleteBookRequest,
     DeleteBookResponse,
     ExtractEpubRequest,
@@ -33,8 +29,6 @@ from src.application.dtos.epub_dtos import (
     SetExcludedSectionsRequest,
     SetExcludedSectionsResponse,
     SlideDTO,
-    SummarizeEpubRequest,
-    SummarizeEpubResponse,
 )
 
 logger = logging.getLogger(__name__)
@@ -96,81 +90,6 @@ class ExtractEpubUseCase:
 
 
 # ---------------------------------------------------------------------------
-# Summarize
-# ---------------------------------------------------------------------------
-
-
-class SummarizeEpubUseCase:
-    """Generate AI summaries for included chapters and persist them.
-    If a job_id is provided, the summarisation will be tracked in the SummaryJobRepository.
-"""
-
-    def __init__(
-        self,
-        ai_agent: AIServicePort,
-        repository: BookRepositoryPort,
-        summary_job_repository: SummaryJobRepositoryPort,
-    ):
-        self._ai_agent = ai_agent
-        self._repository = repository
-        self._summary_job_repository = summary_job_repository
-
-    def execute(self, request: SummarizeEpubRequest) -> SummarizeEpubResponse:
-        job_id = request.job_id
-        book_id = request.book_id
-        chapter_ids = request.chapter_ids
-
-        if job_id:
-            book_id, chapter_ids = self._summary_job_repository.begin_job(job_id)
-
-        if not book_id:
-            raise ValueError("book_id is required when job_id is not provided")
-
-        logger.info("Starting summarisation for book %r", book_id)
-
-        try:
-            if chapter_ids:
-                # Summarise a specific subset — still honour the include flag
-                chapters = [
-                    ch
-                    for cid in chapter_ids
-                    if (ch := self._repository.get_chapter(cid)) is not None and ch.include
-                ]
-            else:
-                # Summarise all chapters that are flagged for inclusion
-                chapters = self._repository.get_chapters(book_id, include_only=True)
-
-            count = 0
-            for chapter in chapters:
-                if not chapter.content:
-                    logger.info("Skipping chapter %r (no content)", chapter.id)
-                    continue
-                logger.info("Summarising chapter %r — %s", chapter.id, chapter.title)
-                try:
-                    summary = self._ai_agent.summarize_content(chapter.content)
-                except Exception as e:
-                    logger.error("Failed to summarise chapter %r: %s", chapter.id, e)
-                    continue
-                self._repository.update_chapter_summary(
-                    chapter_id=chapter.id,
-                    summary=summary,
-                    summary_date=datetime.utcnow(),
-                    ai_generated=True,
-                )
-                count += 1
-
-            if job_id:
-                self._summary_job_repository.mark_completed(job_id, count)
-
-            logger.info("Summarisation complete — %d chapters processed", count)
-            return SummarizeEpubResponse(book_id=book_id, chapters_summarized=count)
-        except Exception as e:
-            if job_id:
-                self._summary_job_repository.mark_failed(job_id, str(e))
-            raise
-
-
-# ---------------------------------------------------------------------------
 # Generate Marp
 # ---------------------------------------------------------------------------
 
@@ -199,28 +118,6 @@ class GenerateMarpUseCase:
             max_depth=request.max_depth,
         )
         return GenerateMarpResponse(marp_output_path=request.marp_output_path)
-
-
-# ---------------------------------------------------------------------------
-# Check LLM connection
-# ---------------------------------------------------------------------------
-
-
-class CheckLLMConnectionUseCase:
-    """Verify that the Ollama LLM service is reachable."""
-
-    def __init__(self, ai_agent: AIServicePort):
-        self._ai_agent = ai_agent
-
-    def execute(self) -> CheckLLMConnectionResponse:
-        info = self._ai_agent.get_connection_info()
-        logger.info(
-            "Checking LLM connection to %s (model: %s)", info["host"], info["model"]
-        )
-        ok = self._ai_agent.test_connection()
-        return CheckLLMConnectionResponse(
-            connected=ok, host=info["host"], model=info["model"]
-        )
 
 
 # ---------------------------------------------------------------------------

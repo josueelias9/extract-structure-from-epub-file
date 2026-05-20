@@ -33,30 +33,6 @@ class ExtractEpubResponse:
 
 
 # ---------------------------------------------------------------------------
-# Summarize
-# ---------------------------------------------------------------------------
-
-
-@dataclass
-class EnqueueSummaryJobRequest:
-    book_id: str
-    chapter_ids: Optional[List[str]] = None  # None → all included chapters
-
-
-@dataclass
-class SummarizeEpubRequest:
-    book_id: Optional[str] = None
-    job_id: Optional[str] = None
-    chapter_ids: Optional[List[str]] = None  # None → all included chapters
-
-
-@dataclass
-class SummarizeEpubResponse:
-    book_id: str
-    chapters_summarized: int
-
-
-# ---------------------------------------------------------------------------
 # Marp
 # ---------------------------------------------------------------------------
 
@@ -74,18 +50,6 @@ class GenerateMarpRequest:
 @dataclass
 class GenerateMarpResponse:
     marp_output_path: str
-
-
-# ---------------------------------------------------------------------------
-# LLM connectivity
-# ---------------------------------------------------------------------------
-
-
-@dataclass
-class CheckLLMConnectionResponse:
-    connected: bool
-    host: str
-    model: str
 
 
 # ---------------------------------------------------------------------------

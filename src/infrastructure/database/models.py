@@ -81,12 +81,12 @@ class UserORM(SQLModel, table=True):
     password: str  # bcrypt hash
 
 
-
 # ========================= Pydantic schemas (migrated from schemas.py) =========================
 
 from pydantic import BaseModel
 
 from typing import Optional
+
 
 class ExtractRequest(BaseModel):
     epub_path: str
@@ -95,18 +95,22 @@ class ExtractRequest(BaseModel):
     language: Optional[str] = None
     author: Optional[str] = None
 
+
 class ExtractResponse(BaseModel):
     book_id: str
     total_chapters: int
     total_content_chars: int
 
+
 class SummarizeRequest(BaseModel):
     book_id: str
     chapter_ids: Optional[list[str]] = None  # None → all included chapters
 
+
 class SummarizeResponse(BaseModel):
     book_id: str
     chapters_summarized: int
+
 
 class MarpRequest(BaseModel):
     book_id: str
@@ -116,13 +120,16 @@ class MarpRequest(BaseModel):
     include_content: bool = False
     max_depth: int = 3
 
+
 class MarpResponse(BaseModel):
     marp_output: str
+
 
 class LLMStatusResponse(BaseModel):
     connected: bool
     host: str
     model: str
+
 
 class ChapterInfo(BaseModel):
     id: str
@@ -132,19 +139,23 @@ class ChapterInfo(BaseModel):
     has_summary: bool
     chapter_id: Optional[str]
 
+
 class ChaptersListResponse(BaseModel):
     book_id: str
     total: int
     chapters: list[ChapterInfo]
+
 
 class SetInclusionRequest(BaseModel):
     book_id: str
     chapter_numbers: list[str]
     include: bool
 
+
 class SetInclusionResponse(BaseModel):
     book_id: str
     updated_count: int
+
 
 class BookInfo(BaseModel):
     id: str
@@ -152,18 +163,22 @@ class BookInfo(BaseModel):
     language: Optional[str] = None
     author: Optional[str] = None
 
+
 class BooksListResponse(BaseModel):
     total: int
     books: list[BookInfo]
+
 
 class UploadEpubResponse(BaseModel):
     book_id: str
     book_name: str
     total_chapters: int
 
+
 class DeleteBookResponse(BaseModel):
     book_id: str
     success: bool
+
 
 class SlideInfo(BaseModel):
     chapter_id: str
@@ -174,8 +189,8 @@ class SlideInfo(BaseModel):
     images: list[str]
     depth: int
 
+
 class SlidesResponse(BaseModel):
     book_id: str
     book_name: str
     slides: list[SlideInfo]
-
