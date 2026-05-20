@@ -5,7 +5,11 @@ from src.application.ports.service_ports import (
     BookRepositoryPort,
 )
 
-from src.application.ports.queue_ports import AIServicePort, SummaryJobRepositoryPort
+from src.application.ports.queue_ports import (
+    AIServicePort,
+    QueuePort,
+    SummaryJobRepositoryPort,
+)
 from src.application.dtos.queue_dtos import (
     SummarizeEpubRequest,
     SummarizeEpubResponse,
@@ -19,7 +23,9 @@ logger = logging.getLogger(__name__)
 
 
 class EnqueueSummaryJobUseCase:
-    def __init__(self, repository, job_repository, queue):
+    def __init__(
+        self, repository: BookRepositoryPort, job_repository, queue: QueuePort
+    ):
         self.repository = repository
         self.job_repository = job_repository
         self.queue = queue

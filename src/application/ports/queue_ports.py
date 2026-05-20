@@ -37,3 +37,17 @@ class SummaryJobRepositoryPort(ABC):
 
     @abstractmethod
     def mark_failed(self, job_id: str, error_message: str): ...
+
+
+# ---------------------------------------------------------------------------
+# Queue
+# ---------------------------------------------------------------------------
+
+
+class QueuePort(ABC):
+    """Port for sending summary jobs to an async task queue."""
+
+    @abstractmethod
+    def publish(self, payload: Dict[str, str]) -> None:
+        """Send a job payload to the queue. Raises on failure."""
+        ...
