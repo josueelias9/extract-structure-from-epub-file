@@ -8,6 +8,9 @@ A tool designed to accelerate the learning process. You upload your EPUB file, a
 
 ![alt text](image.png)
 
+## architecture
+
+![alt text](image-2.png)
 
 ## start proccess (local)
 
