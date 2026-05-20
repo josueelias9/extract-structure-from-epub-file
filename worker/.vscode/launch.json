@@ -2,39 +2,23 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Worker: Smoke Test (fake AI)",
+            "name": "🟢 Worker: Celery Worker",
             "type": "debugpy",
             "request": "launch",
-            "program": "${workspaceFolder}/scripts/worker_smoke_test.py",
-            "cwd": "${workspaceFolder}",
-            "console": "integratedTerminal",
-            "env": {
-                "PYTHONPATH": "${workspaceFolder}"
-            }
-        },
-        {
-            "name": "Worker: Smoke Test (real AI)",
-            "type": "debugpy",
-            "request": "launch",
-            "program": "${workspaceFolder}/scripts/worker_smoke_test.py",
+            "module": "celery",
             "args": [
-                "--use-real-ai"
+                "-A", "src.infrastructure.queue.app:app",
+                "worker",
+                "--loglevel=info",
+                "-Q", "summary_jobs",
+                "--concurrency=1"
             ],
             "cwd": "${workspaceFolder}",
             "console": "integratedTerminal",
+            "python": "${command:python.interpreterPath}",
+            "envFile": "${workspaceFolder}/.env",
             "env": {
-                "PYTHONPATH": "${workspaceFolder}"
-            }
-        },
-        {
-            "name": "🟢 Worker: Run Queue Consumer",
-            "type": "debugpy",
-            "request": "launch",
-            "module": "app.worker",
-            "cwd": "${workspaceFolder}",
-            "console": "integratedTerminal",
-            "env": {
-                "PYTHONPATH": "${workspaceFolder}"
+                "PYTHONPATH": "${workspaceFolder}/worker:${workspaceFolder}"
             }
         }
     ]

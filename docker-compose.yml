@@ -24,7 +24,7 @@ services:
       - POSTGRES_DB
       - DB_HOST
       - DB_PORT
-      - RABBITMQ_URL
+      - CELERY_BROKER_URL=${RABBITMQ_URL}
       - SUMMARY_QUEUE_NAME
     volumes:
       - epub_uploads:/app/uploads
@@ -40,7 +40,16 @@ services:
       context: .
       dockerfile: ./worker/Dockerfile
     container_name: worker-container
-    command: python -m app.worker
+    command:
+      [
+        "celery",
+        "-A",
+        "src.infrastructure.queue.app:app",
+        "worker",
+        "--loglevel=info",
+        "-Q",
+        "${SUMMARY_QUEUE_NAME:-summary_jobs}",
+      ]
     environment:
       - POSTGRES_USER
       - POSTGRES_PASSWORD
@@ -49,7 +58,7 @@ services:
       - LLM_HOST
       - DB_HOST
       - DB_PORT
-      - RABBITMQ_URL
+      - CELERY_BROKER_URL=${RABBITMQ_URL}
       - SUMMARY_QUEUE_NAME
     volumes:
       - epub_uploads:/app/uploads
