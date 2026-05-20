@@ -2,10 +2,18 @@
 
 import { useActionState, useCallback, useEffect, useMemo, useState } from 'react'
 import { useParams, useRouter } from 'next/navigation'
-import { BookInfo, ChapterInfo, SlidesResponse } from '@/app/lib/api'
-import { listBooks, getChapters, getSlides, getLlmStatus } from '@/app/lib/data'
+import { BookInfo, ChapterInfo, SlidesResponse, SummaryJobStatus } from '@/app/lib/api'
+import {
+    listBooks,
+    getChapters,
+    getSlides,
+    getLlmStatus,
+    getSummaryJobStatus,
+    getLatestSummaryJob
+} from '@/app/lib/data'
 import {
     deleteBook,
+    enqueueSummary,
     setChapterInclusion,
     toggleAllChaptersAction,
     ToggleAllState
@@ -13,44 +21,6 @@ import {
 import ChapterList from '@/components/ChapterList'
 import SlidesViewer from '@/components/SlidesViewer'
 import { useDictionary } from '../../DictionaryProvider'
-
-const API_URL = `${process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:8000'}/api/v1`
-
-type SummaryJobStatus = {
-    job_id: string
-    book_id: string
-    status: 'queued' | 'processing' | 'completed' | 'failed'
-    chapters_total: number
-    chapters_summarized: number
-    error_message: string | null
-}
-
-async function handleResponse<T>(res: Response): Promise<T> {
-    if (!res.ok) {
-        const err = await res.json().catch(() => ({ detail: res.statusText }))
-        throw new Error(err.detail ?? res.statusText)
-    }
-    return res.json() as Promise<T>
-}
-
-// TODO: why these methods are not in the data layer?
-async function enqueueSummary(bookId: string): Promise<SummaryJobStatus> {
-    return fetch(`${API_URL}/epub/summarize/queue`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ book_id: bookId })
-    }).then(r => handleResponse(r))
-}
-
-async function getSummaryJobStatus(jobId: string): Promise<SummaryJobStatus> {
-    return fetch(`${API_URL}/epub/summarize/jobs/${jobId}`).then(r => handleResponse(r))
-}
-
-async function getLatestSummaryJob(bookId: string): Promise<SummaryJobStatus | null> {
-    const res = await fetch(`${API_URL}/epub/summarize/jobs/latest/${bookId}`)
-    if (res.status === 404) return null
-    return handleResponse(res)
-}
 
 export default function BookDetailPage() {
     const { id, lang } = useParams<{ id: string; lang: string }>()
@@ -133,7 +103,10 @@ export default function BookDetailPage() {
                 if (next.status === 'completed') {
                     setSummaryMessage({
                         status: 'success',
-                        message: t.summaryCompleted.replace('{count}', String(next.chapters_summarized))
+                        message: t.summaryCompleted.replace(
+                            '{count}',
+                            String(next.chapters_summarized)
+                        )
                     })
                     fetchData()
                 }
@@ -350,7 +323,11 @@ export default function BookDetailPage() {
                             className='w-full flex items-center justify-center gap-2 bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 text-white font-semibold py-2.5 rounded-xl transition-colors'
                         >
                             {(isSummaryActive || isQueueingSummary) && (
-                                <svg className='animate-spin h-4 w-4' viewBox='0 0 24 24' fill='none'>
+                                <svg
+                                    className='animate-spin h-4 w-4'
+                                    viewBox='0 0 24 24'
+                                    fill='none'
+                                >
                                     <circle
                                         className='opacity-25'
                                         cx='12'

@@ -1,6 +1,6 @@
 'use server'
 
-import type { BookInfo, ChapterInfo, SlidesResponse } from './api'
+import type { BookInfo, ChapterInfo, SlidesResponse, SummaryJobStatus } from './api'
 
 const API_URL = `${process.env.NEXT_PRIVATE_API_URL ?? 'http://localhost:8000'}/api/v1`
 
@@ -32,4 +32,14 @@ export async function getLlmStatus(): Promise<{
     model: string
 }> {
     return fetch(`${API_URL}/epub/llm/status`).then(r => handleResponse(r))
+}
+
+export async function getSummaryJobStatus(jobId: string): Promise<SummaryJobStatus> {
+    return fetch(`${API_URL}/epub/summarize/jobs/${jobId}`).then(r => handleResponse(r))
+}
+
+export async function getLatestSummaryJob(bookId: string): Promise<SummaryJobStatus | null> {
+    const res = await fetch(`${API_URL}/epub/summarize/jobs/latest/${bookId}`)
+    if (res.status === 404) return null
+    return handleResponse(res)
 }

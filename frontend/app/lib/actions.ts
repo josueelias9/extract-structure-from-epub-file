@@ -2,6 +2,7 @@
 
 import { AuthError } from 'next-auth'
 import { signIn, signOut } from '@/auth'
+import type { SummaryJobStatus } from './api'
 
 export async function signOutAction() {
     await signOut({ redirectTo: '/' })
@@ -72,6 +73,14 @@ export async function summarizeBook(
     bookId: string
 ): Promise<{ book_id: string; chapters_summarized: number }> {
     return fetch(`${API_URL}/epub/summarize`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ book_id: bookId })
+    }).then(r => handleResponse(r))
+}
+
+export async function enqueueSummary(bookId: string): Promise<SummaryJobStatus> {
+    return fetch(`${API_URL}/epub/summarize/queue`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ book_id: bookId })
